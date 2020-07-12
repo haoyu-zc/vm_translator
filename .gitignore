@@ -1,0 +1,13 @@
+# Compressed File
+*.zip
+
+# Hardware Simulator Files
+*.cmp
+*.tst
+*.out
+
+# vscode c++ config files
+\.vscode
+
+# .exe files
+*.exe
