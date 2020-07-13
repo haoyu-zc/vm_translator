@@ -1,14 +1,9 @@
-#include <iostream>
-#include <fstream>
 #include <string>
+#include <filesystem>
 #include "parser.h"
 #include "encoder.h"
 #include "symbol_table.h"
-#include <stdexcept>
-#include <algorithm>
-#include <filesystem>
 #include "utils.h"
-#include "file.h"
 
 using namespace std;
 
@@ -31,15 +26,9 @@ int main(int argc, char *argv[])
     filepath = filesystem::path(argv[1]);
     filename_in = filepath.stem().string();
 
-    SymbolTable symbTable;
-    // First scan to deal with labels.
-    Parser parser1(filepath.string());
-    symbTable.loadSymbol(parser1);
-
-    // Second scan.
-    Parser parser2(filepath.string());
-    Encoder code;
-    code.writeFile(parser2, filename_in, symbTable);
+    // Parser for vm files.
+    // Remove comments and white spaces.
+    Parser parser(filename_in);
 
     return 0;
 }
