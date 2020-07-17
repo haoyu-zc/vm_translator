@@ -1,7 +1,7 @@
 #include <string>
 #include <filesystem>
 #include "parser.h"
-#include "encoder.h"
+#include "code_gen.h"
 #include "symbol_table.h"
 #include "utils.h"
 
@@ -28,7 +28,12 @@ int main(int argc, char *argv[])
 
     // Parser for vm files.
     // Remove comments and white spaces.
-    Parser parser(filename_in);
+    Parser parser(argv[1]);
+    while (parser.hasMoreCommands())
+    {
+        parser.commandType();
+        parser.advance();
+    }
 
     return 0;
 }
