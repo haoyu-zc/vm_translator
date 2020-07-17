@@ -1,6 +1,8 @@
 #pragma once
 #include <string>
 
-using std::string;
+// Check if a string represents a number 
+bool isNumber(const std::string &s);
 
-bool isNumber(const string &s);
+// Remove surrounding white sapces of a string
+std::string trimOuterSpaces(const std::string &s);
