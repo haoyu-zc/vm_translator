@@ -8,9 +8,25 @@ using std::ifstream;
 using std::string;
 
 // Or use constexpr int A_COMMAND = 1; ? 
-static const int A_COMMAND = 1;
-static const int C_COMMAND = 2;
-static const int L_COMMAND = 3;
+//static const int A_COMMAND = 1;
+//static const int C_COMMAND = 2;
+//static const int L_COMMAND = 3;
+
+enum COMMAND_TYPE
+{
+    A_COMMAND,
+    C_COMMAND,
+    L_COMMAND,
+    C_ARITHMETIC,
+    C_PUSH,
+    C_POP,
+    C_LABEL,
+    C_GOTO,
+    C_IF,
+    C_FUNCTION,
+    C_RETURN,
+    C_CALL
+};
 
 class Parser
 {

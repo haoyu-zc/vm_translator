@@ -8,11 +8,11 @@
 using namespace std;
 
 // Function to remove all spaces from a given string
-string Parser::removeSpaces(string input)
-{
-    input.erase(std::remove(input.begin(), input.end(), ' '), input.end());
-    return input;
-}
+// string Parser::removeSpaces(string input)
+// {
+//     input.erase(std::remove(input.begin(), input.end(), ' '), input.end());
+//     return input;
+// }
 
 // Private fuctions
 void Parser::trim()
@@ -22,18 +22,18 @@ void Parser::trim()
 
     string command;
 
-    while (this->hasMoreCommands())
+    while (hasMoreCommands())
     {
-        this->advance();
-        command = this->currentCmd;
+        advance();
+        command = currentCmd;
 
         /* hasMoreCommarnd() test */
-        cout << command + " has more commands? " << boolalpha << this->hasMoreCommands() << endl;
-        cout << this->commandType() << endl;
+        cout << command + " has more commands? " << boolalpha << hasMoreCommands() << endl;
+        cout << commandType() << endl;
 
         /* symbol() test */
-        if (this->commandType() == A_COMMAND)
-            cout << this->symbol() << endl;
+        if (commandType() == A_COMMAND)
+            cout << symbol() << endl;
 
         fout << command << endl;
     }
@@ -42,15 +42,15 @@ void Parser::trim()
 }
 
 // Public functions
-Parser::Parser(string asmFile)
+Parser::Parser(string vmfile)
 {
     //ifstream fin;
-    this->fin.open(asmFile);
+    fin.open(vmfile);
 }
 
 bool Parser::hasMoreCommands()
 {
-    if (this->fin.peek() != EOF)
+    if (fin.peek() != EOF)
         return true;
     else
         return false;
@@ -66,30 +66,25 @@ void Parser::advance()
     string line;
     getline(fin, line);
     line = regex_replace(line, r_comt, fmt);
-    line = removeSpaces(line);
+    // line = removeSpaces(line);
     // Skip empty lines after removing comments.
     while (line.empty())
     {
         getline(fin, line);
         line = regex_replace(line, r_comt, fmt);
-        line = removeSpaces(line);
+        //line = removeSpaces(line);
     }
-    this->currentCmd = line;
+    currentCmd = line;
 }
 
 int Parser::commandType()
 {
-    const char *firstChar = &this->currentCmd.at(0);
-    switch (*firstChar)
-    {
-    case '@':
-        return A_COMMAND;
-    case '(':
-        return L_COMMAND;
-    default:
-        break;
-    }
-    return C_COMMAND;
+    istringstream line(currentCmd);
+    string first_word;
+    line >> first_word;
+    if (first_word == "push")
+        cout << first_word + ".type = push." << endl;
+    return 1;
 }
 
 string Parser::symbol()
@@ -97,11 +92,11 @@ string Parser::symbol()
     string pattern = "\\(([^)]+)\\)";
     regex r(pattern);
     smatch result;
-    if (this->commandType() == A_COMMAND)
-        return this->currentCmd.substr(1);
-    else if (this->commandType() == L_COMMAND)
+    if (commandType() == A_COMMAND)
+        return currentCmd.substr(1);
+    else if (commandType() == L_COMMAND)
     {
-        regex_search(this->currentCmd, result, r);
+        regex_search(currentCmd, result, r);
         return result.str(1);
     }
     else
@@ -111,21 +106,21 @@ string Parser::symbol()
 string Parser::comp()
 {
     // Judge whether the current command is a C-Command.
-    if (this->commandType() != C_COMMAND)
+    if (commandType() != C_COMMAND)
         throw runtime_error("Not a C command!");
     else
     {
         // Return the comp field
         // Parse command such as "0;JEQ"
-        int semiPos = this->currentCmd.find(';');
+        int semiPos = currentCmd.find(';');
         if (semiPos != string::npos)
             // If there is a jump field, return the chars before ";" for comp field.
-            return this->currentCmd.substr(0, semiPos);
+            return currentCmd.substr(0, semiPos);
         else
         {
             // Parse command such as "D=A"
-            int eqPos = this->currentCmd.find('=');
-            return this->currentCmd.substr(eqPos + 1);
+            int eqPos = currentCmd.find('=');
+            return currentCmd.substr(eqPos + 1);
         }
     }
 }
@@ -133,14 +128,14 @@ string Parser::comp()
 string Parser::dest()
 {
     // Check whether the current command is a C-Command.
-    if (this->commandType() != C_COMMAND)
+    if (commandType() != C_COMMAND)
         throw runtime_error("Not a C command!");
     else
     {
         // Check whether there is a dest field.
-        int eqPos = this->currentCmd.find("=");
+        int eqPos = currentCmd.find("=");
         if (eqPos != string::npos)
-            return this->currentCmd.substr(0, eqPos);
+            return currentCmd.substr(0, eqPos);
         else
             return "null";
     }
@@ -148,10 +143,10 @@ string Parser::dest()
 
 string Parser::jump()
 {
-    int semiPos = this->currentCmd.find(';');
+    int semiPos = currentCmd.find(';');
     if (semiPos != string::npos)
         // If there is a jump field, return the chars before ";" for comp field.
-        return this->currentCmd.substr(semiPos + 1);
+        return currentCmd.substr(semiPos + 1);
     else
         return "null";
 }
