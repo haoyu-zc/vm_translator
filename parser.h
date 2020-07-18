@@ -2,30 +2,10 @@
 #pragma once
 #include <string>
 #include <fstream>
+#include <token.h>
 
 using std::endl;
 using std::ifstream;
-
-// Or use constexpr int A_COMMAND = 1; ? 
-//static const int A_COMMAND = 1;
-//static const int C_COMMAND = 2;
-//static const int L_COMMAND = 3;
-
-enum COMMAND_TYPE
-{
-    A_COMMAND,
-    C_COMMAND,
-    L_COMMAND,
-    C_ARITHMETIC,
-    C_PUSH,
-    C_POP,
-    C_LABEL,
-    C_GOTO,
-    C_IF,
-    C_FUNCTION,
-    C_RETURN,
-    C_CALL
-};
 
 class Parser
 {
@@ -35,6 +15,9 @@ private:
 
 public:
     std::string currentCmd;
+    const Token::COMMAND_TYPE command_type;
+    const int arg1;
+    const int arg2;
 
     // Load the assembly file in commnad line argument
     Parser(std::string asmFile);

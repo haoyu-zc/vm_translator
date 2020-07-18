@@ -8,9 +8,8 @@ private:
     static const std::unordered_map<std::string, int> kwMap;
 
 public:
-    enum
+    enum COMMAND_TYPE
     {
-        // Command types begin
         A_COMMAND,
         C_COMMAND,
         L_COMMAND,
@@ -22,10 +21,11 @@ public:
         C_IF,
         C_FUNCTION,
         C_RETURN,
-        C_CALL,
-        // Command types end
+        C_CALL
+    };
 
-
+    enum
+    {
         // Memory segments begin
         LOCAL,
         ARGUMENT,
@@ -37,8 +37,9 @@ public:
         TEMP,
         // Memory segments end
 
-
         // Opetaions begin
+        PUSH,
+        POP,
         ADD,
         SUB,
         NEG,
