@@ -2,7 +2,7 @@
 #pragma once
 #include <string>
 #include <fstream>
-#include <token.h>
+#include "token.h"
 
 using std::endl;
 using std::ifstream;
@@ -12,12 +12,13 @@ class Parser
 private:
     ifstream fin;
     std::string removeSpaces(std::string str);
+    Token tk;
 
 public:
     std::string currentCmd;
-    const Token::COMMAND_TYPE command_type;
-    const int arg1;
-    const int arg2;
+    Token::COMMAND_TYPE command_type;
+    int arg1;
+    int arg2;
 
     // Load the assembly file in commnad line argument
     Parser(std::string asmFile);
@@ -26,7 +27,7 @@ public:
     void trim();
 
     // Parse command into seperate fields.
-    void parse();
+    void parse(Token &token);
 
     // Is there more commands in the asm file?
     bool hasMoreCommands();

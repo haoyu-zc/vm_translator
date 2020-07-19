@@ -86,7 +86,7 @@ void Encoder::writeFile(Parser &parser, string &filename, SymbolTable &symbTable
     while (parser.hasMoreCommands())
     {
         parser.advance();
-        if (parser.commandType() == A_COMMAND)
+        if (parser.commandType() == Token::A_COMMAND)
         {
             //cout << " A_COMMAND!" << endl;
             symbol = parser.symbol();
@@ -110,7 +110,7 @@ void Encoder::writeFile(Parser &parser, string &filename, SymbolTable &symbTable
             }
             hackFile << binary << endl;
         }
-        else if (parser.commandType() == C_COMMAND)
+        else if (parser.commandType() == Token::C_COMMAND)
         {
             binary = "111" + comp(parser.comp()) + dest(parser.dest()) + jump(parser.jump());
             hackFile << binary << endl;

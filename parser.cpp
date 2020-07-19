@@ -5,6 +5,7 @@
 #include <regex>
 #include <algorithm>
 #include "utils.h"
+#include "token.h"
 
 using namespace std;
 
@@ -26,7 +27,7 @@ void Parser::trim()
         cout << commandType() << endl;
 
         /* symbol() test */
-        if (commandType() == A_COMMAND)
+        if (commandType() == Token::A_COMMAND)
             cout << symbol() << endl;
 
         fout << command << endl;
@@ -42,9 +43,9 @@ Parser::Parser(string vmfile)
     fin.open(vmfile);
 }
 
-void Parser::parse()
+void Parser::parse(Token &token)
 {
-
+    this->tk = token;
 }
 
 bool Parser::hasMoreCommands()
@@ -77,9 +78,14 @@ int Parser::commandType()
     istringstream line(currentCmd);
     string first_word;
     line >> first_word;
-    if (first_word == "push")
-        cout << first_word + ".type = push." << endl;
-    return 1;
+    if (!tk.hasKey(first_word))
+        return -1;
+    else
+    {
+        int token = tk.getToken(first_word);
+        cout << tk.getType(token) << endl;
+        return tk.getType(token);
+    }
 }
 
 string Parser::symbol()
@@ -87,9 +93,9 @@ string Parser::symbol()
     string pattern = "\\(([^)]+)\\)";
     regex r(pattern);
     smatch result;
-    if (commandType() == A_COMMAND)
+    if (commandType() == Token::A_COMMAND)
         return currentCmd.substr(1);
-    else if (commandType() == L_COMMAND)
+    else if (commandType() == Token::L_COMMAND)
     {
         regex_search(currentCmd, result, r);
         return result.str(1);
@@ -101,7 +107,7 @@ string Parser::symbol()
 string Parser::comp()
 {
     // Judge whether the current command is a C-Command.
-    if (commandType() != C_COMMAND)
+    if (commandType() != tk.C_COMMAND)
         throw runtime_error("Not a C command!");
     else
     {
@@ -123,7 +129,7 @@ string Parser::comp()
 string Parser::dest()
 {
     // Check whether the current command is a C-Command.
-    if (commandType() != C_COMMAND)
+    if (commandType() != Token::C_COMMAND)
         throw runtime_error("Not a C command!");
     else
     {

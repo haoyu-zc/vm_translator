@@ -47,7 +47,7 @@ void SymbolTable::loadSymbol(Parser &parser)
     while (parser.hasMoreCommands())
     {
         parser.advance();
-        if (parser.commandType() == L_COMMAND)
+        if (parser.commandType() == Token::L_COMMAND)
         {
             addEntry(parser.symbol(), romAddr + 1);
             //cout << parser1.symbol() << '\t' << symbTable.getAddress(parser1.symbol()) << endl;
