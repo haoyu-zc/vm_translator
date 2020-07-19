@@ -6,13 +6,15 @@ class Token
 {
 private:
     static const std::unordered_map<std::string, int> kwMap;
-    static const std::unordered_map<int, int> CmdTypeMap;
+    static const std::unordered_map<int, int> cmdTypeMap;
+    static const std::unordered_map<int, const char*> nameMap;
 
 public:
     Token(/* args */);
     bool hasKey(const std::string &s);
     int getToken(std::string &s);
     int getType(int token);
+    std::string getName(int token);
     enum COMMAND_TYPE
     {
         A_COMMAND,

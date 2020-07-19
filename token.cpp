@@ -27,7 +27,32 @@ const std::unordered_map<std::string, int> Token::kwMap{
     {"or", Token::OR},
     {"not", Token::NOT}};
 
-const std::unordered_map<int, int> Token::CmdTypeMap{
+const std::unordered_map<int, const char *> Token::nameMap{
+    // Memory segments begin
+    {Token::LOCAL, "local"},
+    {Token::ARGUMENT, "argument"},
+    {Token::THIS, "this"},
+    {Token::THAT, "that"},
+    {Token::CONSTANT, "constant"},
+    {Token::STATIC, "static"},
+    {Token::POINTER, "pointer"},
+    {Token::TEMP, "temp"},
+    // Memory segments end
+
+    // Opetaions begin
+    {Token::PUSH, "push"},
+    {Token::POP, "pop"},
+    {Token::ADD, "add"},
+    {Token::SUB, "sub"},
+    {Token::NEG, "neg"},
+    {Token::EQ, "eq"},
+    {Token::GT, "gt"},
+    {Token::LT, "lt"},
+    {Token::AND, "and"},
+    {Token::OR, "or"},
+    {Token::NOT, "not"}};
+
+const std::unordered_map<int, int> Token::cmdTypeMap{
     {Token::ADD, Token::COMMAND_TYPE::C_ARITHMETIC},
     {Token::SUB, Token::COMMAND_TYPE::C_ARITHMETIC},
     {Token::NEG, Token::COMMAND_TYPE::C_ARITHMETIC},
@@ -60,5 +85,10 @@ int Token::getToken(std::string &s)
 
 int Token::getType(int token)
 {
-    return CmdTypeMap.at(token);
+    return cmdTypeMap.at(token);
+}
+
+std::string Token::getName(int token)
+{
+    return nameMap.at(token);
 }
