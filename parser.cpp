@@ -78,6 +78,7 @@ int Parser::commandType()
     istringstream line(currentCmd);
     string first_word;
     line >> first_word;
+    cout << first_word << " ";
     if (!tk.hasKey(first_word))
         return -1;
     else

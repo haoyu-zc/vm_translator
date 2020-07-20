@@ -33,8 +33,8 @@ int main(int argc, char *argv[])
     parser.parse(tk);
     while (parser.hasMoreCommands())
     {
-        parser.commandType();
         parser.advance();
+        parser.commandType();
     }
 
     return 0;
