@@ -85,6 +85,7 @@ int Parser::commandType()
     {
         int token = tk.getToken(first_word);
         cout << tk.getType(token) << " " << tk.getName(token) << endl;
+        command_type = static_cast<Token::COMMAND_TYPE>(tk.getType(token));
         return tk.getType(token);
     }
 }
