@@ -54,4 +54,6 @@ public:
     // Return the jump mnemonic in the current C-command (8 possibilities).
     // Should be called only when command_type is C_COMMAND.
     std::string jump();
+
+    void closeFstream();
 };

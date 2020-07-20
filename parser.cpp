@@ -153,3 +153,8 @@ string Parser::jump()
     else
         return "null";
 }
+
+void Parser::closeFstream()
+{
+    fin.close();
+}

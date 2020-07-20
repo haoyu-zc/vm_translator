@@ -36,6 +36,7 @@ int main(int argc, char *argv[])
         parser.advance();
         parser.commandType();
     }
+    parser.closeFstream();
 
     return 0;
 }
