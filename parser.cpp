@@ -37,15 +37,25 @@ void Parser::trim()
 }
 
 // Public functions
-Parser::Parser(string vmfile)
+Parser::Parser(string vmfile, Token &token)
 {
     //ifstream fin;
     fin.open(vmfile);
+    tk = token;
 }
 
-void Parser::parse(Token &token)
+void Parser::parse()
 {
-    this->tk = token;
+    istringstream line (currentCmd);
+    switch (command_type)
+    {
+    case Token::C_ARITHMETIC:
+        /* code */
+        break;
+    
+    default:
+        break;
+    }
 }
 
 bool Parser::hasMoreCommands()
@@ -76,6 +86,7 @@ void Parser::advance()
 int Parser::commandType()
 {
     istringstream line(currentCmd);
+    size_t wc = wordcount(cin);
     string first_word;
     line >> first_word;
     cout << first_word << " ";
@@ -84,7 +95,7 @@ int Parser::commandType()
     else
     {
         int token = tk.getToken(first_word);
-        cout << tk.getType(token) << " " << tk.getName(token) << endl;
+        cout << tk.getType(token) << " " << tk.getName(token) <<  endl;
         command_type = static_cast<Token::COMMAND_TYPE>(tk.getType(token));
         return tk.getType(token);
     }

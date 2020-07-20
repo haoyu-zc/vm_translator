@@ -1,6 +1,13 @@
 #include "utils.h"
-#include <algorithm>
 #include <regex>
+#include <iostream>
+#include <fstream>
+#include <string>
+#include <algorithm>
+#include <iterator>
+#include <cstddef>
+
+using namespace std;
 
 bool isNumber(const std::string &s)
 {
@@ -31,3 +38,4 @@ std::string removeComments(const std::string &s)
     std::string fmt = "";
     return regex_replace(s, r_comt, fmt);
 }
+

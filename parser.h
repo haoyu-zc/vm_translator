@@ -21,13 +21,13 @@ public:
     int arg2;
 
     // Load the assembly file in commnad line argument
-    Parser(std::string asmFile);
+    Parser(std::string asmFile, Token &token);
 
     // Output a trimed file(no empty lines and comments).
     void trim();
 
     // Parse command into seperate fields.
-    void parse(Token &token);
+    void parse();
 
     // Is there more commands in the asm file?
     bool hasMoreCommands();
