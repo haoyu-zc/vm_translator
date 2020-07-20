@@ -28,9 +28,9 @@ int main(int argc, char *argv[])
 
     // Parser for vm files.
     // Remove comments and white spaces.
-    Parser parser(argv[1]);
     Token tk;
-    parser.parse(tk);
+    Parser parser(argv[1], tk);
+    parser.parse();
     while (parser.hasMoreCommands())
     {
         parser.advance();
