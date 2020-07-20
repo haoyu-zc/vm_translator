@@ -86,7 +86,9 @@ void Parser::advance()
 int Parser::commandType()
 {
     istringstream line(currentCmd);
-    size_t wc = wordcount(cin);
+    istringstream line2(currentCmd);
+    size_t wc = countWord(line2);
+    line.clear();
     string first_word;
     line >> first_word;
     cout << first_word << " ";
@@ -95,7 +97,7 @@ int Parser::commandType()
     else
     {
         int token = tk.getToken(first_word);
-        cout << tk.getType(token) << " " << tk.getName(token) <<  endl;
+        cout << tk.getType(token) << " " << tk.getName(token) << " " << wc << endl;
         command_type = static_cast<Token::COMMAND_TYPE>(tk.getType(token));
         return tk.getType(token);
     }

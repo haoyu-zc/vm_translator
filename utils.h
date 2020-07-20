@@ -7,7 +7,7 @@
 #include <cstddef>
 
 template <typename T>
-std::size_t wordcount(T &is)
+std::size_t countWord(T &is)
 {
     return distance(std::istream_iterator<std::string>{is}, {});
 }
