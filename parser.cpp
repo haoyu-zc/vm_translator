@@ -46,13 +46,22 @@ Parser::Parser(string vmfile, Token &token)
 
 void Parser::parse()
 {
-    istringstream line (currentCmd);
+    istringstream line(currentCmd);
+    vector<string> tokens{istream_iterator<string>{line},
+                          istream_iterator<string>{}};
+    cmd = tokens[0];
     switch (command_type)
     {
     case Token::C_ARITHMETIC:
-        /* code */
+        arg1 = tokens[1];
         break;
-    
+    case Token::C_RETURN:
+        cout << "error";
+        break;
+    case Token::C_PUSH || Token::C_POP || Token::C_FUNCTION || Token::C_CALL:
+        arg1 = tokens[1];
+        arg2 = tokens[2];
+        break;
     default:
         break;
     }
@@ -85,19 +94,12 @@ void Parser::advance()
 
 int Parser::commandType()
 {
-    istringstream line(currentCmd);
-    istringstream line2(currentCmd);
-    size_t wc = countWord(line2);
-    line.clear();
-    string first_word;
-    line >> first_word;
-    cout << first_word << " ";
-    if (!tk.hasKey(first_word))
+    if (!tk.hasKey(cmd))
         return -1;
     else
     {
-        int token = tk.getToken(first_word);
-        cout << tk.getType(token) << " " << tk.getName(token) << " " << wc << endl;
+        int token = tk.getToken(cmd);
+        cout << tk.getType(token) << " " << tk.getName(token) << endl;
         command_type = static_cast<Token::COMMAND_TYPE>(tk.getType(token));
         return tk.getType(token);
     }

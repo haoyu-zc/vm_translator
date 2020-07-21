@@ -30,10 +30,10 @@ int main(int argc, char *argv[])
     // Remove comments and white spaces.
     Token tk;
     Parser parser(argv[1], tk);
-    parser.parse();
     while (parser.hasMoreCommands())
     {
         parser.advance();
+        parser.parse();
         parser.commandType();
     }
     parser.closeFstream();

@@ -17,8 +17,9 @@ private:
 public:
     std::string currentCmd;
     Token::COMMAND_TYPE command_type;
-    int arg1;
-    int arg2;
+    std::string cmd;
+    std::string arg1;
+    std::string arg2;
 
     // Load the assembly file in commnad line argument
     Parser(std::string asmFile, Token &token);
