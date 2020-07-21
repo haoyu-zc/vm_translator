@@ -99,8 +99,9 @@ int Parser::commandType()
     else
     {
         int token = tk.getToken(cmd);
-        cout << tk.getType(token) << " " << tk.getName(token) << endl;
-        command_type = static_cast<Token::COMMAND_TYPE>(tk.getType(token));
+        //cout << tk.getType(token) << " " << tk.getName(token) << endl;
+        // command_type = static_cast<Token::COMMAND_TYPE>(tk.getType(token));
+        cout << tk.getType(token) << endl;
         return tk.getType(token);
     }
 }
