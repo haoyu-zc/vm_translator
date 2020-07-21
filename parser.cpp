@@ -47,8 +47,8 @@ Parser::Parser(string vmfile, Token &token)
 void Parser::parse()
 {
     istringstream line(currentCmd);
-    vector<string> tokens{istream_iterator<string>{line},
-                          istream_iterator<string>{}};
+    tokens = {istream_iterator<string>{line},
+              istream_iterator<string>{}};
     cmd = tokens[0];
     switch (command_type)
     {

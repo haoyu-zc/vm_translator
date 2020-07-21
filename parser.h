@@ -2,6 +2,7 @@
 #pragma once
 #include <string>
 #include <fstream>
+#include <vector>
 #include "token.h"
 
 using std::endl;
@@ -13,6 +14,7 @@ private:
     ifstream fin;
     std::string removeSpaces(std::string str);
     Token tk;
+    std::vector<std::string> tokens;
 
 public:
     std::string currentCmd;
