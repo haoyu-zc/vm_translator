@@ -1,28 +1,26 @@
 #pragma once
 #include <string>
 #include <map>
+#include <fstream>
 #include <initializer_list>
 #include "parser.h"
 #include "symbol_table.h"
+#include "token.h"
 
 using std::string;
-using std::map;
-using std::initializer_list;
 
-class Encoder
+class CodeGenerator
 {
 private:
-    map<string, string> compTable;
-    map<string, string> destTable;
-    map<string, string> jumpTable;
+    FILE* hackfile;
+
 
 public:
-    Encoder();
-    void loadTable(initializer_list<string> files);
-    string comp(string compStr);
-    string dest(string destStr);
-    string jump(string jumpStr);
-    string aCmdEncoder(string aStr);
+    CodeGenerator(FILE* file);
+    void writeHack();
+    void writeArithmetic(int command);
+    void writePush(int command, int arg1, int arg2);
+    void writePop(int command, int arg1, int arg2);
     void writeFile(Parser &parser, string &filename, SymbolTable &symbolTable);
 };
 

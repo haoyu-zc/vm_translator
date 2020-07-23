@@ -20,7 +20,7 @@ void Parser::trim()
     while (hasMoreCommands())
     {
         advance();
-        command = currentCmd;
+        command = currentCmdLine;
 
         /* hasMoreCommarnd() test */
         cout << command + " has more commands? " << boolalpha << hasMoreCommands() << endl;
@@ -46,21 +46,22 @@ Parser::Parser(string vmfile, Token &token)
 
 void Parser::parse()
 {
-    istringstream line(currentCmd);
-    tokens = {istream_iterator<string>{line},
-              istream_iterator<string>{}};
-    cmd = tokens[0];
+    istringstream line(currentCmdLine);
+    str_frags = {istream_iterator<string>{line},
+                 istream_iterator<string>{}};
+    // Need error handler here to check whehter srt_frags[0] is in the map.
+    cmd = tk.getToken(str_frags[0]);
     switch (command_type)
     {
     case Token::C_ARITHMETIC:
-        arg1 = tokens[1];
+        arg1 = tk.getToken(str_frags[1]);
         break;
     case Token::C_RETURN:
         cout << "error";
         break;
     case Token::C_PUSH || Token::C_POP || Token::C_FUNCTION || Token::C_CALL:
-        arg1 = tokens[1];
-        arg2 = tokens[2];
+        arg1 = tk.getToken(str_frags[1]);
+        arg2 = tk.getToken(str_frags[2]);
         break;
     default:
         break;
@@ -89,21 +90,21 @@ void Parser::advance()
         line = removeComments(line);
         line = trimOuterSpaces(line);
     }
-    currentCmd = line;
+    currentCmdLine = line;
 }
 
 int Parser::commandType()
 {
-    if (!tk.hasKey(cmd))
-        return -1;
-    else
-    {
-        int token = tk.getToken(cmd);
-        //cout << tk.getType(token) << " " << tk.getName(token) << endl;
-        // command_type = static_cast<Token::COMMAND_TYPE>(tk.getType(token));
-        cout << tk.getType(token) << endl;
-        return tk.getType(token);
-    }
+    // if (!tk.hasKey(cmd))
+    //     return -1;
+    // else
+    // {
+    int token = cmd;
+    //cout << tk.getType(token) << " " << tk.getName(token) << endl;
+    // command_type = static_cast<Token::COMMAND_TYPE>(tk.getType(token));
+    cout << tk.getType(token) << endl;
+    return tk.getType(token);
+    // }
 }
 
 string Parser::symbol()
@@ -112,10 +113,10 @@ string Parser::symbol()
     regex r(pattern);
     smatch result;
     if (commandType() == Token::A_COMMAND)
-        return currentCmd.substr(1);
+        return currentCmdLine.substr(1);
     else if (commandType() == Token::L_COMMAND)
     {
-        regex_search(currentCmd, result, r);
+        regex_search(currentCmdLine, result, r);
         return result.str(1);
     }
     else
@@ -131,15 +132,15 @@ string Parser::comp()
     {
         // Return the comp field
         // Parse command such as "0;JEQ"
-        int semiPos = currentCmd.find(';');
+        int semiPos = currentCmdLine.find(';');
         if (semiPos != string::npos)
             // If there is a jump field, return the chars before ";" for comp field.
-            return currentCmd.substr(0, semiPos);
+            return currentCmdLine.substr(0, semiPos);
         else
         {
             // Parse command such as "D=A"
-            int eqPos = currentCmd.find('=');
-            return currentCmd.substr(eqPos + 1);
+            int eqPos = currentCmdLine.find('=');
+            return currentCmdLine.substr(eqPos + 1);
         }
     }
 }
@@ -152,9 +153,9 @@ string Parser::dest()
     else
     {
         // Check whether there is a dest field.
-        int eqPos = currentCmd.find("=");
+        int eqPos = currentCmdLine.find("=");
         if (eqPos != string::npos)
-            return currentCmd.substr(0, eqPos);
+            return currentCmdLine.substr(0, eqPos);
         else
             return "null";
     }
@@ -162,10 +163,10 @@ string Parser::dest()
 
 string Parser::jump()
 {
-    int semiPos = currentCmd.find(';');
+    int semiPos = currentCmdLine.find(';');
     if (semiPos != string::npos)
         // If there is a jump field, return the chars before ";" for comp field.
-        return currentCmd.substr(semiPos + 1);
+        return currentCmdLine.substr(semiPos + 1);
     else
         return "null";
 }

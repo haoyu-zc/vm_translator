@@ -5,23 +5,21 @@
 #include <vector>
 #include "token.h"
 
-using std::endl;
-using std::ifstream;
 
 class Parser
 {
 private:
-    ifstream fin;
+    std::ifstream fin;
     std::string removeSpaces(std::string str);
     Token tk;
-    std::vector<std::string> tokens;
+    std::vector<std::string> str_frags;
 
 public:
-    std::string currentCmd;
+    std::string currentCmdLine;
     Token::COMMAND_TYPE command_type;
-    std::string cmd;
-    std::string arg1;
-    std::string arg2;
+    int cmd;
+    int arg1;
+    int arg2;
 
     // Load the assembly file in commnad line argument
     Parser(std::string asmFile, Token &token);
