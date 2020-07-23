@@ -53,18 +53,18 @@ const std::unordered_map<int, const char *> Token::nameMap{
     {Token::NOT, "not"}};
 
 const std::unordered_map<int, int> Token::cmdTypeMap{
-    {Token::ADD, Token::COMMAND_TYPE::C_ARITHMETIC},
-    {Token::SUB, Token::COMMAND_TYPE::C_ARITHMETIC},
-    {Token::NEG, Token::COMMAND_TYPE::C_ARITHMETIC},
-    {Token::EQ, Token::COMMAND_TYPE::C_ARITHMETIC},
-    {Token::GT, Token::COMMAND_TYPE::C_ARITHMETIC},
-    {Token::LT, Token::COMMAND_TYPE::C_ARITHMETIC},
-    {Token::AND, Token::COMMAND_TYPE::C_ARITHMETIC},
-    {Token::OR, Token::COMMAND_TYPE::C_ARITHMETIC},
-    {Token::NOT, Token::COMMAND_TYPE::C_ARITHMETIC},
+    {Token::ADD, Token::C_ARITHMETIC},
+    {Token::SUB, Token::C_ARITHMETIC},
+    {Token::NEG, Token::C_ARITHMETIC},
+    {Token::EQ, Token::C_ARITHMETIC},
+    {Token::GT, Token::C_ARITHMETIC},
+    {Token::LT, Token::C_ARITHMETIC},
+    {Token::AND, Token::C_ARITHMETIC},
+    {Token::OR, Token::C_ARITHMETIC},
+    {Token::NOT, Token::C_ARITHMETIC},
 
-    {Token::PUSH, Token::COMMAND_TYPE::C_PUSH},
-    {Token::POP, Token::COMMAND_TYPE::C_POP}};
+    {Token::PUSH, Token::C_PUSH},
+    {Token::POP, Token::C_POP}};
 
 Token::Token()
 {

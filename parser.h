@@ -16,7 +16,7 @@ private:
 
 public:
     std::string currentCmdLine;
-    Token::COMMAND_TYPE command_type;
+    int command_type;
     int cmd;
     int arg1;
     int arg2;

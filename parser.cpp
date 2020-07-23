@@ -49,12 +49,20 @@ void Parser::parse()
     istringstream line(currentCmdLine);
     str_frags = {istream_iterator<string>{line},
                  istream_iterator<string>{}};
+    // Test
+    // for (auto &str : str_frags)
+    //     cout << str + " ";
+    // cout << endl;
+
     // Need error handler here to check whehter srt_frags[0] is in the map.
     cmd = tk.getToken(str_frags[0]);
+    cout << "Parsed command: " << cmd;
+    command_type = tk.getType(cmd);
     switch (command_type)
     {
     case Token::C_ARITHMETIC:
         arg1 = tk.getToken(str_frags[1]);
+        cout << " " << arg1;
         break;
     case Token::C_RETURN:
         cout << "error";
@@ -62,10 +70,13 @@ void Parser::parse()
     case Token::C_PUSH || Token::C_POP || Token::C_FUNCTION || Token::C_CALL:
         arg1 = tk.getToken(str_frags[1]);
         arg2 = tk.getToken(str_frags[2]);
+        cout << " " << arg1;
+        cout << " " << arg2;
         break;
     default:
         break;
     }
+    cout << endl;
 }
 
 bool Parser::hasMoreCommands()
@@ -102,7 +113,6 @@ int Parser::commandType()
     int token = cmd;
     //cout << tk.getType(token) << " " << tk.getName(token) << endl;
     // command_type = static_cast<Token::COMMAND_TYPE>(tk.getType(token));
-    cout << tk.getType(token) << endl;
     return tk.getType(token);
     // }
 }
