@@ -49,32 +49,38 @@ void Parser::parse()
     istringstream line(currentCmdLine);
     str_frags = {istream_iterator<string>{line},
                  istream_iterator<string>{}};
-    // Test
-    // for (auto &str : str_frags)
-    //     cout << str + " ";
-    // cout << endl;
+    //Test
+    for (auto &str : str_frags)
+        cout << str + " ";
+    cout << endl;
 
     // Need error handler here to check whehter srt_frags[0] is in the map.
     cmd = tk.getToken(str_frags[0]);
     cout << "Parsed command: " << cmd;
     command_type = tk.getType(cmd);
-    switch (command_type)
+    std::cout << " type: " << command_type << std::endl;
+    // switch (command_type)
+    // {
+    // case Token::C_ARITHMETIC:
+    //     arg1 = tk.getToken(str_frags[1]);
+    //     //cout << " " << arg1;
+    //     break;
+    // case Token::C_RETURN:
+    //     cout << "error";
+    //     break;
+    // case Token::C_PUSH:
+    //     arg1 = tk.getToken(str_frags[1]);
+    //     arg2 = tk.getToken(str_frags[2]);
+    //     // cout << " " << arg1;
+    //     // cout << " " << arg2;
+    //     break;
+    // default:
+    //     break;
+    // }
+    if (command_type == Token::C_PUSH)
     {
-    case Token::C_ARITHMETIC:
         arg1 = tk.getToken(str_frags[1]);
-        cout << " " << arg1;
-        break;
-    case Token::C_RETURN:
-        cout << "error";
-        break;
-    case Token::C_PUSH || Token::C_POP || Token::C_FUNCTION || Token::C_CALL:
-        arg1 = tk.getToken(str_frags[1]);
-        arg2 = tk.getToken(str_frags[2]);
-        cout << " " << arg1;
-        cout << " " << arg2;
-        break;
-    default:
-        break;
+        arg2 = stoi((str_frags[2]));
     }
     cout << endl;
 }

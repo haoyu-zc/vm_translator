@@ -43,8 +43,11 @@ int main(int argc, char *argv[])
     {
         parser.advance();
         parser.parse();
-        int type = parser.commandType();
-        cg.writePush(parser.cmd, parser.arg1, parser.arg2);
+        int type = parser.command_type;
+        if (type == Token::C_PUSH)
+        {
+            cg.writePush(parser.cmd, parser.arg1, parser.arg2);
+        }
     }
     parser.closeFstream();
 

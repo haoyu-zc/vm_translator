@@ -21,8 +21,8 @@ void CodeGenerator::writePush(int command, int arg1, int arg2)
     // if(arg1 == Token::CONSTANT)
     // {
         //fprintf(hackfile, "@%d\nD=A\n", arg2);
-        // std::cout << command << " " << arg1 << " " << arg2 << std::endl;
-        fprintf(hackfile, "test\n");
+        std::cout << command << " " << arg1 << " " << arg2 << std::endl;
+        //fprintf(hackfile, "test\n");
     // }
 }
 

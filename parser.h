@@ -17,9 +17,9 @@ private:
 public:
     std::string currentCmdLine;
     int command_type;
-    int cmd;
-    int arg1;
-    int arg2;
+    int cmd = -1;
+    int arg1 = -1;
+    int arg2 = -1;
 
     // Load the assembly file in commnad line argument
     Parser(std::string asmFile, Token &token);
