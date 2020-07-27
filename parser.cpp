@@ -23,12 +23,12 @@ void Parser::trim()
         command = currentCmdLine;
 
         /* hasMoreCommarnd() test */
-        cout << command + " has more commands? " << boolalpha << hasMoreCommands() << endl;
-        cout << commandType() << endl;
+        std::cout << command + " has more commands? " << boolalpha << hasMoreCommands() << endl;
+        std::cout << commandType() << endl;
 
         /* symbol() test */
         if (commandType() == Token::A_COMMAND)
-            cout << symbol() << endl;
+            std::cout << symbol() << endl;
 
         fout << command << endl;
     }
@@ -50,39 +50,29 @@ void Parser::parse()
     str_frags = {istream_iterator<string>{line},
                  istream_iterator<string>{}};
     //Test
-    for (auto &str : str_frags)
-        cout << str + " ";
-    cout << endl;
+    // for (auto &str : str_frags)
+    //     std::cout << str + " ";
+    // std::cout << endl;
 
     // Need error handler here to check whehter srt_frags[0] is in the map.
     cmd = tk.getToken(str_frags[0]);
-    cout << "Parsed command: " << cmd;
     command_type = tk.getType(cmd);
-    std::cout << " type: " << command_type << std::endl;
-    // switch (command_type)
-    // {
-    // case Token::C_ARITHMETIC:
-    //     arg1 = tk.getToken(str_frags[1]);
-    //     //cout << " " << arg1;
-    //     break;
-    // case Token::C_RETURN:
-    //     cout << "error";
-    //     break;
-    // case Token::C_PUSH:
-    //     arg1 = tk.getToken(str_frags[1]);
-    //     arg2 = tk.getToken(str_frags[2]);
-    //     // cout << " " << arg1;
-    //     // cout << " " << arg2;
-    //     break;
-    // default:
-    //     break;
-    // }
-    if (command_type == Token::C_PUSH)
+    switch (command_type)
     {
+    case Token::C_ARITHMETIC:
+        break;
+    case Token::C_RETURN:
+        // std::cout << "error";
+        break;
+    case Token::C_PUSH:
         arg1 = tk.getToken(str_frags[1]);
         arg2 = stoi((str_frags[2]));
+        // cout << " " << arg1;
+        // cout << " " << arg2;
+        break;
+    default:
+        break;
     }
-    cout << endl;
 }
 
 bool Parser::hasMoreCommands()
