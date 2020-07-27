@@ -12,11 +12,13 @@ using std::string;
 class CodeGenerator
 {
 private:
-    FILE* hackfile;
+    FILE* _hackfile;
+    Parser* _parser;
+    bool generate_comments = true;
 
 
 public:
-    CodeGenerator(FILE* file);
+    CodeGenerator(FILE* file, Parser* parser);
     void writeHack();
     void writeArithmetic(int command);
     void writePush(int command, int arg1, int arg2);

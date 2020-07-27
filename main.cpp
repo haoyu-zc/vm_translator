@@ -5,6 +5,7 @@
 #include "symbol_table.h"
 #include "utils.h"
 #include "file.h"
+#include <stdio.h>
 
 std::string program;
 std::string filename_in;
@@ -14,6 +15,7 @@ bool debug = false;
 static bool only_preprocess = false;
 static bool only_compile = false;
 static bool specified_out_name = false;
+static bool generate_comments = true;
 
 int main(int argc, char *argv[])
 {
@@ -24,7 +26,8 @@ int main(int argc, char *argv[])
     filepath_in = std::filesystem::path(argv[1]);
     filename_in = filepath_in.stem().string();
 
-    FILE *fp = stdout;
+
+    FILE *fp;
     if (specified_out_name)
     {
         fp = fopen((filename_out + ".asm").c_str(), "w");
@@ -38,18 +41,15 @@ int main(int argc, char *argv[])
     // Remove comments and white spaces.
     Token tk;
     Parser parser(argv[1], tk);
-    CodeGenerator cg(fp);
+    CodeGenerator cg(fp, &parser);
     while (parser.hasMoreCommands())
     {
         parser.advance();
         parser.parse();
-        int type = parser.command_type;
-        if (type == Token::C_PUSH)
-        {
-            cg.writePush(parser.cmd, parser.arg1, parser.arg2);
-        }
+        cg.writeHack();
     }
-    parser.closeFstream();
+    fclose(fp);
+    //parser.closeFstream();
 
     return 0;
 }
