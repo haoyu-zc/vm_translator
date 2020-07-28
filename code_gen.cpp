@@ -21,22 +21,46 @@ void CodeGenerator::writeHack()
 {
     if (generate_comments)
         fprintf(_hackfile, "//%s\n", _parser->currentCmdLine.c_str());
+
     switch (_parser->command_type)
     {
     case Token::C_PUSH:
         writePush(_parser->cmd, _parser->arg1, _parser->arg2);
         break;
-    
+    case Token::C_ARITHMETIC:
+        writeArithmetic(_parser->cmd);
+        break;
     default:
         break;
     }
-    
+}
+
+void CodeGenerator::writeArithmetic(int command)
+{
+    switch (command)
+    {
+    case Token::ADD:
+        fprintf(_hackfile, "@SP\n"
+                           "M=M-1\n"
+                           "A=M\n"
+                           "D=M\n"
+                           "@SP\n"
+                           "M=M-1\n"
+                           "A=M\n"
+                           "M=M+D\n"
+                           "@SP\n"
+                           "M=M+1\n");
+        break;
+
+    default:
+        break;
+    }
 }
 
 void CodeGenerator::writePush(int command, int arg1, int arg2)
 {
     // Hack.asm of push constant c
-    fprintf(_hackfile, "@%d\n", arg1);
+    fprintf(_hackfile, "@%d\n", arg2);
     fprintf(_hackfile, "D=A\n"
                        "@SP\n"
                        "A=M\n"
