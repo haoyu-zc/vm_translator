@@ -145,37 +145,24 @@ void CodeGenerator::writeArithmetic(int command)
         break;
     case Token::AND:
         fprintf(_hackfile, "@SP\n"
-                           "M=M-1\n"
-                           "A=M\n"
+                           "AM=M-1\n"
                            "D=M\n"
-                           "@SP\n"
-                           "M=M-1\n"
-                           "A=M\n"
-                           "M=M&D\n"
-                           "@SP\n"
-                           "M=M+1\n");
+                           "A=A-1\n"
+                           "M=M&D\n");
         break;
     case Token::OR:
         fprintf(_hackfile, "@SP\n"
-                           "M=M-1\n"
-                           "A=M\n"
+                           "AM=M-1\n"
                            "D=M\n"
-                           "@SP\n"
-                           "M=M-1\n"
-                           "A=M\n"
-                           "M=M|D\n"
-                           "@SP\n"
-                           "M=M+1\n");
+                           "A=A-1\n"
+                           "M=M|D\n");
         break;
     case Token::NOT:
         fprintf(_hackfile, "@SP\n"
-                           "M=M-1\n"
-                           "A=M\n"
+                           "AM=M-1\n"
                            "D=M\n"
-                           "@SP\n"
-                           "M=M-1\n"
-                           "A=M\n"
-                           "M=!D\n"
+                           "A=A-1\n"
+                           "M=!M\n"
                            "@SP\n"
                            "M=M+1\n");
         break;
