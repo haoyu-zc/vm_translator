@@ -51,7 +51,134 @@ void CodeGenerator::writeArithmetic(int command)
                            "@SP\n"
                            "M=M+1\n");
         break;
-
+    case Token::SUB:
+        fprintf(_hackfile, "@SP\n"
+                           "M=M-1\n"
+                           "A=M\n"
+                           "D=M\n"
+                           "@SP\n"
+                           "M=M-1\n"
+                           "A=M\n"
+                           "M=M-D\n"
+                           "@SP\n"
+                           "M=M+1\n");
+        break;
+    case Token::NEG:
+        fprintf(_hackfile, "@SP\n"
+                           "M=M-1\n"
+                           "A=M\n"
+                           "M=-M\n"
+                           "@SP\n"
+                           "M=M+1\n");
+        break;
+    case Token::EQ:
+        fprintf(_hackfile, "@SP\n"
+                           "AM=M-1\n"
+                           "D=M\n"
+                           "A=A-1\n"
+                           "D=M-D\n"
+                           "@TRUE%d\n"
+                           "D;JEQ\n"
+                           "@SP\n"
+                           "AM=M-1\n"
+                           "M=0\n"
+                           "@SP\n"
+                           "M=M+1\n"
+                           "@FALSE%d\n"
+                           "0;JMP\n"
+                           "(TRUE%d)\n"
+                           "@SP\n"
+                           "AM=M-1\n"
+                           "M=-1\n"
+                           "@SP\n"
+                           "M=M+1\n"
+                           "(FALSE%d)\n", index, index, index, index);
+        index++;
+        break;
+    case Token::GT:
+        fprintf(_hackfile, "@SP\n"
+                           "AM=M-1\n"
+                           "D=M\n"
+                           "A=A-1\n"
+                           "D=M-D\n"
+                           "@TRUE%d\n"
+                           "D;JGT\n"
+                           "@SP\n"
+                           "AM=M-1\n"
+                           "M=0\n"
+                           "@SP\n"
+                           "M=M+1\n"
+                           "@FALSE%d\n"
+                           "0;JMP\n"
+                           "(TRUE%d)\n"
+                           "@SP\n"
+                           "AM=M-1\n"
+                           "M=-1\n"
+                           "@SP\n"
+                           "M=M+1\n"
+                           "(FALSE%d)\n", index, index, index, index);
+        index++;
+        break;
+    case Token::LT:
+        fprintf(_hackfile, "@SP\n"
+                           "AM=M-1\n"
+                           "D=M\n"
+                           "A=A-1\n"
+                           "D=M-D\n"
+                           "@TRUE%d\n"
+                           "D;JLT\n"
+                           "@SP\n"
+                           "AM=M-1\n"
+                           "M=0\n"
+                           "@SP\n"
+                           "M=M+1\n"
+                           "@FALSE%d\n"
+                           "0;JMP\n"
+                           "(TRUE%d)\n"
+                           "@SP\n"
+                           "AM=M-1\n"
+                           "M=-1\n"
+                           "@SP\n"
+                           "M=M+1\n"
+                           "(FALSE%d)\n", index, index, index, index);
+        index++;
+        break;
+    case Token::AND:
+        fprintf(_hackfile, "@SP\n"
+                           "M=M-1\n"
+                           "A=M\n"
+                           "D=M\n"
+                           "@SP\n"
+                           "M=M-1\n"
+                           "A=M\n"
+                           "M=M&D\n"
+                           "@SP\n"
+                           "M=M+1\n");
+        break;
+    case Token::OR:
+        fprintf(_hackfile, "@SP\n"
+                           "M=M-1\n"
+                           "A=M\n"
+                           "D=M\n"
+                           "@SP\n"
+                           "M=M-1\n"
+                           "A=M\n"
+                           "M=M|D\n"
+                           "@SP\n"
+                           "M=M+1\n");
+        break;
+    case Token::NOT:
+        fprintf(_hackfile, "@SP\n"
+                           "M=M-1\n"
+                           "A=M\n"
+                           "D=M\n"
+                           "@SP\n"
+                           "M=M-1\n"
+                           "A=M\n"
+                           "M=!D\n"
+                           "@SP\n"
+                           "M=M+1\n");
+        break;
     default:
         break;
     }

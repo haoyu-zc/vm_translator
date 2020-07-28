@@ -15,6 +15,7 @@ private:
     FILE* _hackfile;
     Parser* _parser;
     bool generate_comments = true;
+    int index = 0;
 
 
 public:
