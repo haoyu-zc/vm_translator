@@ -41,32 +41,21 @@ void CodeGenerator::writeArithmetic(int command)
     {
     case Token::ADD:
         fprintf(_hackfile, "@SP\n"
-                           "M=M-1\n"
-                           "A=M\n"
+                           "AM=M-1\n"
                            "D=M\n"
-                           "@SP\n"
-                           "M=M-1\n"
-                           "A=M\n"
-                           "M=M+D\n"
-                           "@SP\n"
-                           "M=M+1\n");
+                           "A=A-1\n"
+                           "M=M+D\n");
         break;
     case Token::SUB:
         fprintf(_hackfile, "@SP\n"
-                           "M=M-1\n"
-                           "A=M\n"
+                           "AM=M-1\n"
                            "D=M\n"
-                           "@SP\n"
-                           "M=M-1\n"
-                           "A=M\n"
-                           "M=M-D\n"
-                           "@SP\n"
-                           "M=M+1\n");
+                           "A=A-1\n"
+                           "M=M-D\n");
         break;
     case Token::NEG:
         fprintf(_hackfile, "@SP\n"
-                           "M=M-1\n"
-                           "A=M\n"
+                           "AM=M-1\n"
                            "M=-M\n"
                            "@SP\n"
                            "M=M+1\n");
@@ -160,8 +149,6 @@ void CodeGenerator::writeArithmetic(int command)
     case Token::NOT:
         fprintf(_hackfile, "@SP\n"
                            "AM=M-1\n"
-                           "D=M\n"
-                           "A=A-1\n"
                            "M=!M\n"
                            "@SP\n"
                            "M=M+1\n");
