@@ -123,7 +123,8 @@ void CodeGenerator::writeArithmetic(int command)
 }
 
 const char *str_segment;
-const char *push_template = "A=M\n"
+const char *push_template = "@%s\n"
+                            "A=M\n"
                             "A=A+%d\n"
                             "D=M\n"
                             "@SP\n"
@@ -138,26 +139,22 @@ void CodeGenerator::writePush(int command, int arg1, int arg2)
     {
     case Token::LOCAL:
         str_segment = "LCL";
-        fprintf(_hackfile, "@%s\n", str_segment);
-        fprintf(_hackfile, push_template, arg2);
+        fprintf(_hackfile, push_template, str_segment, arg2);
         break;
 
     case Token::ARGUMENT:
         str_segment = "ARG";
-        fprintf(_hackfile, "@%s\n", str_segment);
-        fprintf(_hackfile, push_template, arg2);
+        fprintf(_hackfile, push_template, str_segment, arg2);
         break;
 
     case Token::THIS:
         str_segment = "THIS";
-        fprintf(_hackfile, "@%s\n", str_segment);
-        fprintf(_hackfile, push_template, arg2);
+        fprintf(_hackfile, push_template, str_segment, arg2);
         break;
 
     case Token::THAT:
         str_segment = "THAT";
-        fprintf(_hackfile, "@%s\n", str_segment);
-        fprintf(_hackfile, push_template, arg2);
+        fprintf(_hackfile, push_template, str_segment, arg2);
         break;
 
     case Token::CONSTANT:
@@ -168,6 +165,11 @@ void CodeGenerator::writePush(int command, int arg1, int arg2)
                            "M=D\n"
                            "@SP\n"
                            "M=M+1\n");
+        break;
+    
+    // TEMP segment maps on RAM[5] to RAM[12]
+    case Token::TEMP:
+        fprintf(_hackfile, push_template, "5", arg2);
         break;
 
     default:
@@ -208,6 +210,10 @@ void CodeGenerator::writePop(int command, int arg1, int arg2)
     case Token::THAT:
         str_segment = "THAT";
         fprintf(_hackfile, pop_template, str_segment, arg2);
+        break;
+
+    case Token::TEMP:
+        fprintf(_hackfile, pop_template, "5", arg2);
         break;
 
     default:
