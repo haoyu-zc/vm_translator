@@ -29,6 +29,9 @@ void CodeGenerator::writeHack()
     case Token::C_PUSH:
         writePush(_parser->cmd, _parser->arg1, _parser->arg2);
         break;
+    case Token::C_POP:
+        writePop(_parser->cmd, _parser->arg1, _parser->arg2);
+        break;
     case Token::C_ARITHMETIC:
         writeArithmetic(_parser->cmd);
         break;
@@ -119,16 +122,97 @@ void CodeGenerator::writeArithmetic(int command)
     }
 }
 
+const char *str_segment;
+const char *push_template = "A=M\n"
+                            "A=A+%d\n"
+                            "D=M\n"
+                            "@SP\n"
+                            "A=M\n"
+                            "M=D\n"
+                            "@SP\n"
+                            "M=M+1\n";
+
 void CodeGenerator::writePush(int command, int arg1, int arg2)
 {
-    // Hack.asm of push constant c
-    fprintf(_hackfile, "@%d\n", arg2);
-    fprintf(_hackfile, "D=A\n"
-                       "@SP\n"
-                       "A=M\n"
-                       "M=D\n"
-                       "@SP\n"
-                       "M=M+1\n");
+    switch (arg1)
+    {
+    case Token::LOCAL:
+        str_segment = "LCL";
+        fprintf(_hackfile, "@%s\n", str_segment);
+        fprintf(_hackfile, push_template, arg2);
+        break;
+
+    case Token::ARGUMENT:
+        str_segment = "ARG";
+        fprintf(_hackfile, "@%s\n", str_segment);
+        fprintf(_hackfile, push_template, arg2);
+        break;
+
+    case Token::THIS:
+        str_segment = "THIS";
+        fprintf(_hackfile, "@%s\n", str_segment);
+        fprintf(_hackfile, push_template, arg2);
+        break;
+
+    case Token::THAT:
+        str_segment = "THAT";
+        fprintf(_hackfile, "@%s\n", str_segment);
+        fprintf(_hackfile, push_template, arg2);
+        break;
+
+    case Token::CONSTANT:
+        fprintf(_hackfile, "@%d\n", arg2);
+        fprintf(_hackfile, "D=A\n"
+                           "@SP\n"
+                           "A=M\n"
+                           "M=D\n"
+                           "@SP\n"
+                           "M=M+1\n");
+        break;
+
+    default:
+        break;
+    }
+}
+
+const char *pop_template = "@SP\n"
+                           "A=M\n"
+                           "M=D\n"
+                           "@SP\n"
+                           "M=M-1\n"
+                           "@%s\n"
+                           "A=M\n"
+                           "A=A+%d\n"
+                           "M=D\n";
+
+void CodeGenerator::writePop(int command, int arg1, int arg2)
+{
+    std::cout << "writePop!" << std::endl;
+    switch (arg1)
+    {
+    case Token::LOCAL:
+        str_segment = "LCL";
+        fprintf(_hackfile, pop_template, str_segment, arg2);
+        break;
+
+    case Token::ARGUMENT:
+        str_segment = "ARG";
+        fprintf(_hackfile, pop_template, str_segment, arg2);
+        break;
+
+    case Token::THIS:
+        str_segment = "THIS";
+        fprintf(_hackfile, pop_template, str_segment, arg2);
+        break;
+
+    case Token::THAT:
+        str_segment = "THAT";
+        fprintf(_hackfile, pop_template, str_segment, arg2);
+        break;
+
+    default:
+        break;
+    }
 }
 
 void CodeGenerator::writeFile(Parser &parser, std::string &filename, SymbolTable &symbTable)
