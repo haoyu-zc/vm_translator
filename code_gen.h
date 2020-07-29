@@ -22,6 +22,8 @@ public:
     CodeGenerator(FILE* file, Parser* parser);
     void writeHack();
     void writeArithmetic(int command);
+    // Generate code of EQ, GT and LT
+    void writeCompa(std::string compa_prediacte);
     void writePush(int command, int arg1, int arg2);
     void writePop(int command, int arg1, int arg2);
     void writeFile(Parser &parser, string &filename, SymbolTable &symbolTable);

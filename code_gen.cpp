@@ -11,6 +11,7 @@
 #include "utils.h"
 #include "symbol_table.h"
 #include "token.h"
+#include <stdio.h>
 
 CodeGenerator::CodeGenerator(FILE *file, Parser *parser)
 {
@@ -36,10 +37,10 @@ void CodeGenerator::writeHack()
     }
 }
 
-const char *arith_stem = "@SP\n"
-                         "AM=M-1\n"
-                         "D=M\n"
-                         "A=A-1\n";
+const char *pop_stem = "@SP\n"
+                       "AM=M-1\n"
+                       "D=M\n"
+                       "A=A-1\n";
 
 const char *stack_dec = "@SP\n"
                         "AM=M-1\n";
@@ -47,118 +48,71 @@ const char *stack_dec = "@SP\n"
 const char *pointer_inc = "@SP\n"
                           "M=M+1\n";
 
+void CodeGenerator::writeCompa(std::string compa_predicate)
+{
+    fprintf(_hackfile, "@SP\n"
+                       "AM=M-1\n"
+                       "D=M\n"
+                       "A=A-1\n"
+                       "D=M-D\n"
+                       "@TRUE%d\n" // index
+                       "D;%s\n"    // compa_predicate
+                       "@SP\n"
+                       "AM=M-1\n"
+                       "M=0\n"
+                       "@SP\n"
+                       "M=M+1\n"
+                       "@FALSE%d\n" // index
+                       "0;JMP\n"
+                       "(TRUE%d)\n" // index
+                       "@SP\n"
+                       "AM=M-1\n"
+                       "M=-1\n"
+                       "@SP\n"
+                       "M=M+1\n"
+                       "(FALSE%d)\n", // index
+            index, compa_predicate.c_str(), index, index, index);
+    index++;
+}
+
 void CodeGenerator::writeArithmetic(int command)
 {
     switch (command)
     {
     case Token::ADD:
-        fprintf(_hackfile, arith_stem);
+        fprintf(_hackfile, pop_stem);
         fprintf(_hackfile, "M=M+D\n");
         break;
     case Token::SUB:
-        fprintf(_hackfile, arith_stem);
+        fprintf(_hackfile, pop_stem);
         fprintf(_hackfile, "M=M-D\n");
         break;
     case Token::NEG:
         fprintf(_hackfile, stack_dec);
-        fprintf(_hackfile,"M=-M\n");
+        fprintf(_hackfile, "M=-M\n");
         fprintf(_hackfile, pointer_inc);
         break;
     case Token::EQ:
-        fprintf(_hackfile, "@SP\n"
-                           "AM=M-1\n"
-                           "D=M\n"
-                           "A=A-1\n"
-                           "D=M-D\n"
-                           "@TRUE%d\n"
-                           "D;JEQ\n"
-                           "@SP\n"
-                           "AM=M-1\n"
-                           "M=0\n"
-                           "@SP\n"
-                           "M=M+1\n"
-                           "@FALSE%d\n"
-                           "0;JMP\n"
-                           "(TRUE%d)\n"
-                           "@SP\n"
-                           "AM=M-1\n"
-                           "M=-1\n"
-                           "@SP\n"
-                           "M=M+1\n"
-                           "(FALSE%d)\n",
-                index, index, index, index);
-        index++;
+        writeCompa("JEQ");
         break;
     case Token::GT:
-        fprintf(_hackfile, "@SP\n"
-                           "AM=M-1\n"
-                           "D=M\n"
-                           "A=A-1\n"
-                           "D=M-D\n"
-                           "@TRUE%d\n"
-                           "D;JGT\n"
-                           "@SP\n"
-                           "AM=M-1\n"
-                           "M=0\n"
-                           "@SP\n"
-                           "M=M+1\n"
-                           "@FALSE%d\n"
-                           "0;JMP\n"
-                           "(TRUE%d)\n"
-                           "@SP\n"
-                           "AM=M-1\n"
-                           "M=-1\n"
-                           "@SP\n"
-                           "M=M+1\n"
-                           "(FALSE%d)\n",
-                index, index, index, index);
-        index++;
+        writeCompa("JGT");
         break;
     case Token::LT:
-        fprintf(_hackfile, "@SP\n"
-                           "AM=M-1\n"
-                           "D=M\n"
-                           "A=A-1\n"
-                           "D=M-D\n"
-                           "@TRUE%d\n"
-                           "D;JLT\n"
-                           "@SP\n"
-                           "AM=M-1\n"
-                           "M=0\n"
-                           "@SP\n"
-                           "M=M+1\n"
-                           "@FALSE%d\n"
-                           "0;JMP\n"
-                           "(TRUE%d)\n"
-                           "@SP\n"
-                           "AM=M-1\n"
-                           "M=-1\n"
-                           "@SP\n"
-                           "M=M+1\n"
-                           "(FALSE%d)\n",
-                index, index, index, index);
-        index++;
+        writeCompa("JLT");
         break;
     case Token::AND:
-        fprintf(_hackfile, "@SP\n"
-                           "AM=M-1\n"
-                           "D=M\n"
-                           "A=A-1\n"
-                           "M=M&D\n");
+        fprintf(_hackfile, pop_stem);
+        fprintf(_hackfile, "M=M&D\n");
         break;
     case Token::OR:
-        fprintf(_hackfile, "@SP\n"
-                           "AM=M-1\n"
-                           "D=M\n"
-                           "A=A-1\n"
-                           "M=M|D\n");
+        fprintf(_hackfile, pop_stem);
+        fprintf(_hackfile, "M=M|D\n");
         break;
     case Token::NOT:
-        fprintf(_hackfile, "@SP\n"
-                           "AM=M-1\n"
-                           "M=!M\n"
-                           "@SP\n"
-                           "M=M+1\n");
+        fprintf(_hackfile, stack_dec);
+        fprintf(_hackfile, "M=!M\n");
+        fprintf(_hackfile, pointer_inc);
         break;
     default:
         break;
