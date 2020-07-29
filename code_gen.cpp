@@ -5,6 +5,7 @@
 #include <iostream>
 #include <initializer_list>
 #include <bitset>
+#include <cstring>
 #include "parser.h"
 #include "file.h"
 #include "utils.h"
@@ -35,30 +36,33 @@ void CodeGenerator::writeHack()
     }
 }
 
+const char *arith_stem = "@SP\n"
+                         "AM=M-1\n"
+                         "D=M\n"
+                         "A=A-1\n";
+
+const char *stack_dec = "@SP\n"
+                        "AM=M-1\n";
+
+const char *pointer_inc = "@SP\n"
+                          "M=M+1\n";
+
 void CodeGenerator::writeArithmetic(int command)
 {
     switch (command)
     {
     case Token::ADD:
-        fprintf(_hackfile, "@SP\n"
-                           "AM=M-1\n"
-                           "D=M\n"
-                           "A=A-1\n"
-                           "M=M+D\n");
+        fprintf(_hackfile, arith_stem);
+        fprintf(_hackfile, "M=M+D\n");
         break;
     case Token::SUB:
-        fprintf(_hackfile, "@SP\n"
-                           "AM=M-1\n"
-                           "D=M\n"
-                           "A=A-1\n"
-                           "M=M-D\n");
+        fprintf(_hackfile, arith_stem);
+        fprintf(_hackfile, "M=M-D\n");
         break;
     case Token::NEG:
-        fprintf(_hackfile, "@SP\n"
-                           "AM=M-1\n"
-                           "M=-M\n"
-                           "@SP\n"
-                           "M=M+1\n");
+        fprintf(_hackfile, stack_dec);
+        fprintf(_hackfile,"M=-M\n");
+        fprintf(_hackfile, pointer_inc);
         break;
     case Token::EQ:
         fprintf(_hackfile, "@SP\n"
@@ -81,7 +85,8 @@ void CodeGenerator::writeArithmetic(int command)
                            "M=-1\n"
                            "@SP\n"
                            "M=M+1\n"
-                           "(FALSE%d)\n", index, index, index, index);
+                           "(FALSE%d)\n",
+                index, index, index, index);
         index++;
         break;
     case Token::GT:
@@ -105,7 +110,8 @@ void CodeGenerator::writeArithmetic(int command)
                            "M=-1\n"
                            "@SP\n"
                            "M=M+1\n"
-                           "(FALSE%d)\n", index, index, index, index);
+                           "(FALSE%d)\n",
+                index, index, index, index);
         index++;
         break;
     case Token::LT:
@@ -129,7 +135,8 @@ void CodeGenerator::writeArithmetic(int command)
                            "M=-1\n"
                            "@SP\n"
                            "M=M+1\n"
-                           "(FALSE%d)\n", index, index, index, index);
+                           "(FALSE%d)\n",
+                index, index, index, index);
         index++;
         break;
     case Token::AND:
