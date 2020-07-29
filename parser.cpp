@@ -70,6 +70,9 @@ void Parser::parse()
         // cout << " " << arg1;
         // cout << " " << arg2;
         break;
+    case Token::C_POP:
+        arg1 = tk.getToken(str_frags[1]);
+        arg2 = stoi((str_frags[2]));
     default:
         break;
     }
