@@ -123,9 +123,11 @@ void CodeGenerator::writeArithmetic(int command)
 }
 
 const char *str_segment;
-const char *push_template1 = "@%s\n"
+const char *push_template1 = "@%d\n"
+                             "D=A\n"
+                             "@%s\n"
                              "A=M\n"
-                             "A=A+%d\n"
+                             "A=A+D\n"
                              "D=M\n"
                              "@SP\n"
                              "A=M\n"
@@ -151,7 +153,7 @@ void CodeGenerator::writePush(int command, int arg1, int arg2)
         if (arg2 == 0)
             fprintf(_hackfile, push_template2, str_segment);
         else
-            fprintf(_hackfile, push_template1, str_segment, arg2);
+            fprintf(_hackfile, push_template1, arg2, str_segment);
         break;
 
     case Token::ARGUMENT:
@@ -159,7 +161,7 @@ void CodeGenerator::writePush(int command, int arg1, int arg2)
         if (arg2 == 0)
             fprintf(_hackfile, push_template2, str_segment);
         else
-            fprintf(_hackfile, push_template1, str_segment, arg2);
+            fprintf(_hackfile, push_template1, arg2, str_segment);
         break;
 
     case Token::THIS:
@@ -167,7 +169,7 @@ void CodeGenerator::writePush(int command, int arg1, int arg2)
         if (arg2 == 0)
             fprintf(_hackfile, push_template2, str_segment);
         else
-            fprintf(_hackfile, push_template1, str_segment, arg2);
+            fprintf(_hackfile, push_template1, arg2, str_segment);
         break;
 
     case Token::THAT:
@@ -175,7 +177,7 @@ void CodeGenerator::writePush(int command, int arg1, int arg2)
         if (arg2 == 0)
             fprintf(_hackfile, push_template2, str_segment);
         else
-            fprintf(_hackfile, push_template1, str_segment, arg2);
+            fprintf(_hackfile, push_template1, arg2, str_segment);
         break;
 
     case Token::CONSTANT:
@@ -193,7 +195,7 @@ void CodeGenerator::writePush(int command, int arg1, int arg2)
         if (arg2 == 0)
             fprintf(_hackfile, push_template2, str_segment);
         else
-            fprintf(_hackfile, push_template1, "5", arg2);
+            fprintf(_hackfile, push_template1, arg2, "5");
         break;
 
     default:
@@ -206,9 +208,11 @@ const char *pop_template1 = "@SP\n"
                             "M=D\n"
                             "@SP\n"
                             "M=M-1\n"
+                            "@%d\n"
+                            "D=A\n"
                             "@%s\n"
                             "A=M\n"
-                            "A=A+%d\n"
+                            "A=A+D\n"
                             "M=D\n";
 
 const char *pop_template2 = "@SP\n"
@@ -230,7 +234,7 @@ void CodeGenerator::writePop(int command, int arg1, int arg2)
         if (arg2 == 0)
             fprintf(_hackfile, pop_template2, str_segment);
         else
-            fprintf(_hackfile, pop_template1, str_segment, arg2);
+            fprintf(_hackfile, pop_template1, arg2, str_segment);
         break;
 
     case Token::ARGUMENT:
@@ -238,7 +242,7 @@ void CodeGenerator::writePop(int command, int arg1, int arg2)
         if (arg2 == 0)
             fprintf(_hackfile, pop_template2, str_segment);
         else
-            fprintf(_hackfile, pop_template1, str_segment, arg2);
+            fprintf(_hackfile, pop_template1, arg2, str_segment);
         break;
 
     case Token::THIS:
@@ -246,7 +250,7 @@ void CodeGenerator::writePop(int command, int arg1, int arg2)
         if (arg2 == 0)
             fprintf(_hackfile, pop_template2, str_segment);
         else
-            fprintf(_hackfile, pop_template1, str_segment, arg2);
+            fprintf(_hackfile, pop_template1, arg2, str_segment);
         break;
 
     case Token::THAT:
@@ -254,14 +258,14 @@ void CodeGenerator::writePop(int command, int arg1, int arg2)
         if (arg2 == 0)
             fprintf(_hackfile, pop_template2, str_segment);
         else
-            fprintf(_hackfile, pop_template1, str_segment, arg2);
+            fprintf(_hackfile, pop_template1, arg2, str_segment);
         break;
 
     case Token::TEMP:
         if (arg2 == 0)
             fprintf(_hackfile, pop_template2, str_segment);
         else
-            fprintf(_hackfile, pop_template1, "5", arg2);
+            fprintf(_hackfile, pop_template1, arg2, "5");
         break;
 
     default:
