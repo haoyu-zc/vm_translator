@@ -123,15 +123,24 @@ void CodeGenerator::writeArithmetic(int command)
 }
 
 const char *str_segment;
-const char *push_template = "@%s\n"
-                            "A=M\n"
-                            "A=A+%d\n"
-                            "D=M\n"
-                            "@SP\n"
-                            "A=M\n"
-                            "M=D\n"
-                            "@SP\n"
-                            "M=M+1\n";
+const char *push_template1 = "@%s\n"
+                             "A=M\n"
+                             "A=A+%d\n"
+                             "D=M\n"
+                             "@SP\n"
+                             "A=M\n"
+                             "M=D\n"
+                             "@SP\n"
+                             "M=M+1\n";
+
+const char *push_template2 = "@%s\n"
+                             "A=M\n"
+                             "D=M\n"
+                             "@SP\n"
+                             "A=M\n"
+                             "M=D\n"
+                             "@SP\n"
+                             "M=M+1\n";
 
 void CodeGenerator::writePush(int command, int arg1, int arg2)
 {
@@ -139,22 +148,34 @@ void CodeGenerator::writePush(int command, int arg1, int arg2)
     {
     case Token::LOCAL:
         str_segment = "LCL";
-        fprintf(_hackfile, push_template, str_segment, arg2);
+        if (arg2 == 0)
+            fprintf(_hackfile, push_template2, str_segment);
+        else
+            fprintf(_hackfile, push_template1, str_segment, arg2);
         break;
 
     case Token::ARGUMENT:
         str_segment = "ARG";
-        fprintf(_hackfile, push_template, str_segment, arg2);
+        if (arg2 == 0)
+            fprintf(_hackfile, push_template2, str_segment);
+        else
+            fprintf(_hackfile, push_template1, str_segment, arg2);
         break;
 
     case Token::THIS:
         str_segment = "THIS";
-        fprintf(_hackfile, push_template, str_segment, arg2);
+        if (arg2 == 0)
+            fprintf(_hackfile, push_template2, str_segment);
+        else
+            fprintf(_hackfile, push_template1, str_segment, arg2);
         break;
 
     case Token::THAT:
         str_segment = "THAT";
-        fprintf(_hackfile, push_template, str_segment, arg2);
+        if (arg2 == 0)
+            fprintf(_hackfile, push_template2, str_segment);
+        else
+            fprintf(_hackfile, push_template1, str_segment, arg2);
         break;
 
     case Token::CONSTANT:
@@ -166,10 +187,13 @@ void CodeGenerator::writePush(int command, int arg1, int arg2)
                            "@SP\n"
                            "M=M+1\n");
         break;
-    
+
     // TEMP segment maps on RAM[5] to RAM[12]
     case Token::TEMP:
-        fprintf(_hackfile, push_template, "5", arg2);
+        if (arg2 == 0)
+            fprintf(_hackfile, push_template2, str_segment);
+        else
+            fprintf(_hackfile, push_template1, "5", arg2);
         break;
 
     default:
@@ -177,15 +201,24 @@ void CodeGenerator::writePush(int command, int arg1, int arg2)
     }
 }
 
-const char *pop_template = "@SP\n"
-                           "A=M\n"
-                           "M=D\n"
-                           "@SP\n"
-                           "M=M-1\n"
-                           "@%s\n"
-                           "A=M\n"
-                           "A=A+%d\n"
-                           "M=D\n";
+const char *pop_template1 = "@SP\n"
+                            "A=M\n"
+                            "M=D\n"
+                            "@SP\n"
+                            "M=M-1\n"
+                            "@%s\n"
+                            "A=M\n"
+                            "A=A+%d\n"
+                            "M=D\n";
+
+const char *pop_template2 = "@SP\n"
+                            "A=M\n"
+                            "M=D\n"
+                            "@SP\n"
+                            "M=M-1\n"
+                            "@%s\n"
+                            "A=M\n"
+                            "M=D\n";
 
 void CodeGenerator::writePop(int command, int arg1, int arg2)
 {
@@ -194,26 +227,41 @@ void CodeGenerator::writePop(int command, int arg1, int arg2)
     {
     case Token::LOCAL:
         str_segment = "LCL";
-        fprintf(_hackfile, pop_template, str_segment, arg2);
+        if (arg2 == 0)
+            fprintf(_hackfile, pop_template2, str_segment);
+        else
+            fprintf(_hackfile, pop_template1, str_segment, arg2);
         break;
 
     case Token::ARGUMENT:
         str_segment = "ARG";
-        fprintf(_hackfile, pop_template, str_segment, arg2);
+        if (arg2 == 0)
+            fprintf(_hackfile, pop_template2, str_segment);
+        else
+            fprintf(_hackfile, pop_template1, str_segment, arg2);
         break;
 
     case Token::THIS:
         str_segment = "THIS";
-        fprintf(_hackfile, pop_template, str_segment, arg2);
+        if (arg2 == 0)
+            fprintf(_hackfile, pop_template2, str_segment);
+        else
+            fprintf(_hackfile, pop_template1, str_segment, arg2);
         break;
 
     case Token::THAT:
         str_segment = "THAT";
-        fprintf(_hackfile, pop_template, str_segment, arg2);
+        if (arg2 == 0)
+            fprintf(_hackfile, pop_template2, str_segment);
+        else
+            fprintf(_hackfile, pop_template1, str_segment, arg2);
         break;
 
     case Token::TEMP:
-        fprintf(_hackfile, pop_template, "5", arg2);
+        if (arg2 == 0)
+            fprintf(_hackfile, pop_template2, str_segment);
+        else
+            fprintf(_hackfile, pop_template1, "5", arg2);
         break;
 
     default:
