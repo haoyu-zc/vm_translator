@@ -203,6 +203,7 @@ void CodeGenerator::writePush(int command, int arg1, int arg2)
     }
 }
 
+// Normal template
 const char *pop_template1 = "@%s\n"
                             "D=M\n"
                             "@%d\n"
@@ -216,8 +217,22 @@ const char *pop_template1 = "@%s\n"
                             "A=M\n"
                             "M=D\n";
 
+// Template when arg2=0 since "A=A+0" is illegal 
 const char *pop_template2 = "@%s\n"
                             "D=M\n"
+                            "@R15\n"
+                            "M=D\n"
+                            "@SP\n"
+                            "AM=M-1\n"
+                            "D=M\n"
+                            "@R15\n"
+                            "A=M\n"
+                            "M=D\n";
+
+const char *pop_template_temp = "@%s\n"
+                            "D=A\n"
+                            "@%d\n"
+                            "D=D+A\n"
                             "@R15\n"
                             "M=D\n"
                             "@SP\n"
@@ -268,7 +283,7 @@ void CodeGenerator::writePop(int command, int arg1, int arg2)
         if (arg2 == 0)
             fprintf(_hackfile, pop_template2, str_segment);
         else
-            fprintf(_hackfile, pop_template1, "5", arg2);
+            fprintf(_hackfile, pop_template_temp, "5", arg2);
         break;
 
     default:
