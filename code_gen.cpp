@@ -124,6 +124,7 @@ void CodeGenerator::writeArithmetic(int command)
 
 // TEMP segment maps on RAM[5] to RAM[12]
 const char *temp_segment = "5";
+const char *pointer_segment = "THIS";
 const char *push_template1 = "@%d\n"
                              "D=A\n"
                              "@%s\n"
@@ -187,6 +188,21 @@ void CodeGenerator::writePush(int command, int arg1, int arg2)
         writePushTemplate(temp_segment, arg2);
         break;
 
+    case Token::POINTER:
+        if (arg2 == 1)
+            pointer_segment = "THAT";
+        else if (arg2 == 0)
+            pointer_segment = "THIS";
+        fprintf(_hackfile, "@%s\n"
+                           "A=M\n"
+                           "D=M\n"
+                           "@SP\n"
+                           "A=M\n"
+                           "M=D\n"
+                           "@SP\n"
+                           "M=M+1\n",
+                pointer_segment);
+        break;
     default:
         break;
     }
@@ -263,8 +279,20 @@ void CodeGenerator::writePop(int command, int arg1, int arg2)
         writePopTemplate(temp_segment, arg2);
         break;
 
+    case Token::POINTER:
+        if (arg2 == 1)
+            pointer_segment = "THAT";
+        else if (arg2 == 0)
+            pointer_segment = "THIS";
+        fprintf(_hackfile, "@SP\n"
+                           "AM=M-1\n"
+                           "D=M\n"
+                           "@%s\n"
+                           "M=D\n",
+                pointer_segment);
+        break;
+
     default:
         break;
     }
 }
-
