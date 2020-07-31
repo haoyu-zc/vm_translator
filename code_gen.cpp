@@ -202,6 +202,18 @@ void CodeGenerator::writePush(int command, int arg1, int arg2)
                            "M=M+1\n",
                 pointer_segment);
         break;
+
+    case Token::STATIC:
+        fprintf(_hackfile, "@%s.%d\n"
+                           "D=M\n"
+                           "@SP\n"
+                           "A=M\n"
+                           "M=D\n"
+                           "@SP\n"
+                           "M=M+1\n",
+                _parser->input_filename.c_str(), arg2);
+        break;
+
     default:
         break;
     }
@@ -289,6 +301,15 @@ void CodeGenerator::writePop(int command, int arg1, int arg2)
                            "@%s\n"
                            "M=D\n",
                 pointer_segment);
+        break;
+
+    case Token::STATIC:
+        fprintf(_hackfile, "@SP\n"
+                           "AM=M-1\n"
+                           "D=M\n"
+                           "@%s.%d\n"
+                           "M=D\n",
+                _parser->input_filename.c_str(), arg2);
         break;
 
     default:

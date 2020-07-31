@@ -15,6 +15,11 @@ string getNameStem(const fs::path &filepath)
     return filepath.stem().string();
 }
 
+std::string getNameStem(const std::string filepath)
+{
+    return std::filesystem::path(filepath).stem().string();
+}
+
 string getName(const fs::path &filepath)
 {
     return filepath.filename().string();

@@ -15,6 +15,7 @@ private:
     std::vector<std::string> str_frags;
 
 public:
+    std::string input_filename;
     std::string currentCmdLine;
     int command_type;
     int cmd = -1;

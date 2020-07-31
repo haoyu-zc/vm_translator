@@ -6,6 +6,7 @@
 #include <algorithm>
 #include "utils.h"
 #include "token.h"
+#include "file.h"
 
 using namespace std;
 
@@ -42,6 +43,7 @@ Parser::Parser(string vmfile, Token &token)
     //ifstream fin;
     fin.open(vmfile);
     tk = token;
+    input_filename = getNameStem(vmfile);
 }
 
 void Parser::parse()
