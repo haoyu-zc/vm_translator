@@ -12,20 +12,19 @@ using std::string;
 class CodeGenerator
 {
 private:
-    FILE* _hackfile;
-    Parser* _parser;
+    FILE *_hackfile;
+    Parser *_parser;
     bool generate_comments = true;
     int index = 0;
 
-
 public:
-    CodeGenerator(FILE* file, Parser* parser);
+    CodeGenerator(FILE *file, Parser *parser);
     void writeHack();
     void writeArithmetic(int command);
     // Generate code of EQ, GT and LT
     void writeCompa(std::string compa_prediacte);
     void writePush(int command, int arg1, int arg2);
+    void writePushTemplate(const char *segment, int arg2);
+    void writePopTemplate(const char *segment, int arg2);
     void writePop(int command, int arg1, int arg2);
-    void writeFile(Parser &parser, string &filename, SymbolTable &symbolTable);
 };
-
