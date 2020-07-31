@@ -194,7 +194,6 @@ void CodeGenerator::writePush(int command, int arg1, int arg2)
         else if (arg2 == 0)
             pointer_segment = "THIS";
         fprintf(_hackfile, "@%s\n"
-                           "A=M\n"
                            "D=M\n"
                            "@SP\n"
                            "A=M\n"
