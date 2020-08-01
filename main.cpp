@@ -10,7 +10,7 @@
 std::string program;
 std::string filename_in;
 std::string filename_out;
-std::filesystem::path filepath_in;
+std::string filepath_in;
 bool debug = false;
 static bool only_preprocess = false;
 static bool only_compile = false;
@@ -23,8 +23,8 @@ int main(int argc, char *argv[])
     {
         throw std::invalid_argument("ERROR. Assembly file name not provided!");
     }
-    filepath_in = std::filesystem::path(argv[1]);
-    filename_in = filepath_in.stem().string();
+    filepath_in = (argv[1]);
+    filename_in = getNameStem(filepath_in); 
 
 
     FILE *fp;
