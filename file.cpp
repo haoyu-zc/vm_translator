@@ -28,6 +28,12 @@ std::string getNameStem(const std::string &filepath)
     return filepath.substr(seppos + 1, dotpos - seppos + 1);
 }
 
+std::string getFilepath(const std::string filepath)
+{
+    size_t pos2 = filepath.rfind(".");
+    return filepath.substr(0, pos2);
+}
+
 string getName(const std::string &filepath)
 {
     size_t seppos = filepath.rfind("\\");

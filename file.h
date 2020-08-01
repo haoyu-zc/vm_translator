@@ -9,4 +9,6 @@ std::string getNameStem(const std::string &filepath);
 
 string getName(const std::string &filepath);
 
+std::string getFilepath(const std::string filepath);
+
 void validateFileName(const std::string &filepath);

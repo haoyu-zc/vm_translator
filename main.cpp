@@ -1,5 +1,4 @@
 #include <string>
-#include <filesystem>
 #include "parser.h"
 #include "code_gen.h"
 #include "symbol_table.h"
@@ -34,7 +33,7 @@ int main(int argc, char *argv[])
     }
     else
     {
-        fp = fopen((getNameStem(filepath_in) + ".asm").c_str(), "w");
+        fp = fopen((getFilepath(filepath_in) + ".asm").c_str(), "w");
     }
 
     // Parser for vm files.
