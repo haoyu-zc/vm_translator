@@ -21,18 +21,18 @@ CodeGenerator::CodeGenerator(FILE *file, Parser *parser)
 void CodeGenerator::writeHack()
 {
     if (generate_comments)
-        fprintf(_hackfile, "//%s\n", _parser->currentCmdLine.c_str());
+        fprintf(_hackfile, "//%s\n", _parser->getCmdLine().c_str());
 
-    switch (_parser->command_type)
+    switch (_parser->getCommandType())
     {
     case Token::C_PUSH:
-        writePush(_parser->cmd, _parser->arg1, _parser->arg2);
+        writePush(_parser->getCommand(), _parser->getArg1(), _parser->getArg2());
         break;
     case Token::C_POP:
-        writePop(_parser->cmd, _parser->arg1, _parser->arg2);
+        writePop(_parser->getCommand(), _parser->getArg1(), _parser->getArg2());
         break;
     case Token::C_ARITHMETIC:
-        writeArithmetic(_parser->cmd);
+        writeArithmetic(_parser->getCommand());
         break;
     default:
         break;
@@ -222,7 +222,7 @@ void CodeGenerator::writePush(int command, int arg1, int arg2)
                            "M=D\n"
                            "@SP\n"
                            "M=M+1\n",
-                _parser->input_filename.c_str(), arg2);
+                _parser->getInputFileName().c_str(), arg2);
         break;
 
     default:
@@ -321,7 +321,7 @@ void CodeGenerator::writePop(int command, int arg1, int arg2)
                            "D=M\n"
                            "@%s.%d\n"
                            "M=D\n",
-                _parser->input_filename.c_str(), arg2);
+                _parser->getInputFileName().c_str(), arg2);
         break;
 
     default:
