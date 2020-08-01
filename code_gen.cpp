@@ -9,7 +9,6 @@
 #include "parser.h"
 #include "file.h"
 #include "utils.h"
-#include "symbol_table.h"
 #include "token.h"
 #include <stdio.h>
 

@@ -25,9 +25,6 @@ public:
     // Load the assembly file in commnad line argument
     Parser(std::string asmFile, Token &token);
 
-    // Output a trimed file(no empty lines and comments).
-    void trim();
-
     // Parse command into seperate fields.
     void parse();
 
@@ -40,22 +37,6 @@ public:
     // Return the type of the current command, including
     // A_COMMAND, C_COMMAND, and L_COMMAND.
     int commandType();
-
-    // Return the symbol or decimal Xxx of the current command @Xxx or (Xxx).
-    // Should be called only when command_type is A_COMMAND or L_COMMAND.
-    std::string symbol();
-
-    // Return the comp mnemonic in the current C-command (28 possibilities).
-    // Should be called only when command_type is C_COMMAND.
-    std::string comp();
-
-    // Return the dest mnemonic in the current C-command (8 possibilities).
-    // Should be called only when command_type is C_COMMAND.
-    std::string dest();
-
-    // Return the jump mnemonic in the current C-command (8 possibilities).
-    // Should be called only when command_type is C_COMMAND.
-    std::string jump();
 
     void closeFstream();
 };

@@ -4,7 +4,6 @@
 #include <fstream>
 #include <initializer_list>
 #include "parser.h"
-#include "symbol_table.h"
 #include "token.h"
 
 using std::string;

@@ -1,7 +1,6 @@
 #include <string>
 #include "parser.h"
 #include "code_gen.h"
-#include "symbol_table.h"
 #include "utils.h"
 #include "file.h"
 #include <stdio.h>
