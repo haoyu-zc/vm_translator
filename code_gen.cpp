@@ -146,6 +146,18 @@ const char *push_template2 = "@%s\n"
                              "@SP\n"
                              "M=M+1\n";
 
+const char *push_template_temp = "@%d\n"
+                                 "D=A\n"
+                                 "@%s\n"
+                                 "D=D+A\n"
+                                 "A=D\n"
+                                 "D=M\n"
+                                 "@SP\n"
+                                 "A=M\n"
+                                 "M=D\n"
+                                 "@SP\n"
+                                 "M=M+1\n";
+
 void CodeGenerator::writePushTemplate(const char *segment, int arg2)
 {
     if (arg2 == 0)
@@ -185,7 +197,7 @@ void CodeGenerator::writePush(int command, int arg1, int arg2)
         break;
 
     case Token::TEMP:
-        writePushTemplate(temp_segment, arg2);
+        fprintf(_hackfile, push_template_temp, arg2, temp_segment);
         break;
 
     case Token::POINTER:
@@ -287,7 +299,8 @@ void CodeGenerator::writePop(int command, int arg1, int arg2)
         break;
 
     case Token::TEMP:
-        writePopTemplate(temp_segment, arg2);
+        fprintf(_hackfile, pop_template_temp, temp_segment, arg2);
+        // writePopTemplate(temp_segment, arg2);
         break;
 
     case Token::POINTER:
