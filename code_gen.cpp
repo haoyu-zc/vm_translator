@@ -21,7 +21,7 @@ CodeGenerator::CodeGenerator(FILE *file, Parser *parser)
 void CodeGenerator::writeHack()
 {
     if (generate_comments)
-        fprintf(_hackfile, "//%s\n", _parser->getCmdLine().c_str());
+        fprintf(_hackfile, "// %s\n", _parser->getCmdLine().c_str());
 
     switch (_parser->getCommandType())
     {
