@@ -34,6 +34,15 @@ void CodeGenerator::writeHack()
     case Token::C_ARITHMETIC:
         writeArithmetic(_parser->getCommand());
         break;
+    case Token::C_GOTO:
+        writeGoto(_parser->getLabel());
+        break;
+    case Token::C_LABEL:
+        writeLabel(_parser->getLabel());
+        break;
+    case Token::C_IF:
+        writeIf(_parser->getLabel());
+        break;
     default:
         break;
     }
@@ -277,6 +286,7 @@ void CodeGenerator::writePopTemplate(const char *segment, int arg2)
         fprintf(_hackfile, pop_template1, segment, arg2);
 }
 
+// _debug: the first arg can be deleted.
 void CodeGenerator::writePop(int command, int arg1, int arg2)
 {
     switch (arg1)
@@ -327,4 +337,29 @@ void CodeGenerator::writePop(int command, int arg1, int arg2)
     default:
         break;
     }
+}
+
+void CodeGenerator::writeInit()
+{
+}
+
+void CodeGenerator::writeLabel(std::string label)
+{
+    fprintf(_hackfile, "(%s)\n", label.c_str());
+}
+
+void CodeGenerator::writeGoto(std::string label)
+{
+    fprintf(_hackfile, "@%s\n"
+                       "0;JMP\n",
+            label.c_str());
+}
+
+void CodeGenerator::writeIf(std::string label)
+{
+    fprintf(_hackfile, "AM=M-1\n"
+                       "D=M\n"
+                       "@%s\n"
+                       "D;JGT\n", // True branching(D=111...111).
+            label.c_str());
 }

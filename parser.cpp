@@ -39,12 +39,16 @@ void Parser::parse()
     case Token::C_PUSH:
         arg1 = tk.getToken(str_frags[1]);
         arg2 = stoi((str_frags[2]));
-        // cout << " " << arg1;
-        // cout << " " << arg2;
         break;
     case Token::C_POP:
         arg1 = tk.getToken(str_frags[1]);
         arg2 = stoi((str_frags[2]));
+    case Token::C_LABEL:
+        label = tk.getToken(str_frags[1]);
+    case Token::C_GOTO:
+        label = tk.getToken(str_frags[1]);
+    case Token::C_IF:
+        label = tk.getToken(str_frags[1]);
     default:
         break;
     }
@@ -121,4 +125,9 @@ int Parser::getArg1()
 int Parser::getArg2()
 {
     return arg2;
+}
+
+std::string Parser::getLabel()
+{
+    return label;
 }

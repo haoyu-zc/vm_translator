@@ -18,6 +18,7 @@ private:
     int cmd = -1;
     int arg1 = -1;
     int arg2 = -1;
+    std::string label = NULL;
 
 public:
     std::string getInputFileName();
@@ -29,6 +30,8 @@ public:
     int getCommand();
 
     int getArg1();
+
+    std::string getLabel();
 
     int getArg2();
 

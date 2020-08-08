@@ -26,4 +26,10 @@ public:
     void writePushTemplate(const char *segment, int arg2);
     void writePopTemplate(const char *segment, int arg2);
     void writePop(int command, int arg1, int arg2);
+
+    // Program control
+    void writeInit();
+    void writeLabel(std::string label);
+    void writeGoto(std::string label);
+    void writeIf(std::string label);
 };
