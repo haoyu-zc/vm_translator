@@ -11,3 +11,5 @@
 
 # .exe files
 *.exe
+
+\tests
