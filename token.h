@@ -17,9 +17,6 @@ public:
     std::string getName(int token);
     enum COMMAND_TYPE
     {
-        A_COMMAND,
-        C_COMMAND,
-        L_COMMAND,
         C_ARITHMETIC,
         C_PUSH,
         C_POP,
@@ -55,7 +52,16 @@ public:
         LT,
         AND,
         OR,
-        NOT
+        NOT,
         // Operations end
+
+        // Program control begins
+        LABEL,
+        GOTO,
+        IF,
+        FUNCTION,
+        RETURN,
+        CALL
+        // Program control ends
     };
 };

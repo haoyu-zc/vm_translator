@@ -25,7 +25,19 @@ const std::unordered_map<std::string, int> Token::kwMap{
     {"lt", Token::LT},
     {"and", Token::AND},
     {"or", Token::OR},
-    {"not", Token::NOT}};
+    {"not", Token::NOT},
+    // Operations end
+
+    // Program control starts
+    {"label", Token::LABEL},
+    {"goto", Token::GOTO},
+    {"if-goto", Token::IF},
+    {"function", Token::FUNCTION},
+    {"return", Token::RETURN},
+    {"call", Token::CALL}
+    // Program control ends
+
+};
 
 const std::unordered_map<int, const char *> Token::nameMap{
     // Memory segments begin
@@ -50,7 +62,19 @@ const std::unordered_map<int, const char *> Token::nameMap{
     {Token::LT, "lt"},
     {Token::AND, "and"},
     {Token::OR, "or"},
-    {Token::NOT, "not"}};
+    {Token::NOT, "not"},
+    // Operations end
+
+    // Program control starts
+    {Token::LABEL, "label"},
+    {Token::GOTO, "goto"},
+    {Token::IF, "if-goto"},
+    {Token::FUNCTION, "function"},
+    {Token::RETURN, "return"},
+    {Token::CALL, "call"}
+    // Program control ends
+
+};
 
 const std::unordered_map<int, int> Token::cmdTypeMap{
     {Token::ADD, Token::C_ARITHMETIC},
@@ -64,7 +88,17 @@ const std::unordered_map<int, int> Token::cmdTypeMap{
     {Token::NOT, Token::C_ARITHMETIC},
 
     {Token::PUSH, Token::C_PUSH},
-    {Token::POP, Token::C_POP}};
+    {Token::POP, Token::C_POP},
+    {Token::LABEL, Token::C_LABEL},
+
+    {Token::LABEL, Token::C_LABEL},
+    {Token::GOTO, Token::C_GOTO},
+    {Token::IF, Token::C_IF},
+    {Token::FUNCTION, Token::C_FUNCTION},
+    {Token::RETURN, Token::C_RETURN},
+    {Token::CALL, Token::C_CALL}
+
+};
 
 Token::Token()
 {

@@ -47,7 +47,7 @@ int main(int argc, char *argv[])
         cg.writeHack();
     }
     fclose(fp);
-    //parser.closeFstream();
+    // parser.closeFstream();
 
     return 0;
 }

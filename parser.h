@@ -18,7 +18,7 @@ private:
     int cmd = -1;
     int arg1 = -1;
     int arg2 = -1;
-    std::string label = NULL;
+    std::string label;
 
 public:
     std::string getInputFileName();

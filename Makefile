@@ -1,2 +1,2 @@
 all:
-	g++ -std=c++17 -Wall *.cpp -o VMTranslator
+	g++ -std=c++11 -Wall *.cpp -o VMTranslator

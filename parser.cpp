@@ -21,10 +21,10 @@ void Parser::parse()
     std::istringstream line(currentCmdLine);
     str_frags = {std::istream_iterator<string>{line},
                  std::istream_iterator<string>{}};
-    //Test
+    // Test
     // for (auto &str : str_frags)
     //     std::cout << str + " ";
-    // std::cout << endl;
+    // std::cout << std::endl;
 
     // Need error handler here to check whehter srt_frags[0] is in the map.
     cmd = tk.getToken(str_frags[0]);
@@ -44,11 +44,11 @@ void Parser::parse()
         arg1 = tk.getToken(str_frags[1]);
         arg2 = stoi((str_frags[2]));
     case Token::C_LABEL:
-        label = tk.getToken(str_frags[1]);
+        label = str_frags[1];
     case Token::C_GOTO:
-        label = tk.getToken(str_frags[1]);
+        label = str_frags[1];
     case Token::C_IF:
-        label = tk.getToken(str_frags[1]);
+        label = str_frags[1];
     default:
         break;
     }
