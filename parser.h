@@ -12,7 +12,7 @@ private:
     std::string removeSpaces(std::string str);
     Token tk;
     std::vector<std::string> str_frags;
-    std::string input_filename;
+    std::string input_filename_stem;
     std::string currentCmdLine;
     int command_type;
     int cmd = -1;
@@ -21,7 +21,7 @@ private:
     std::string label;
 
 public:
-    std::string getInputFileName();
+    std::string getInputFileNameStem();
 
     std::string getCmdLine();
 

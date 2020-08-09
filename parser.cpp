@@ -13,7 +13,7 @@ Parser::Parser(std::string vmfile, Token &token)
     //ifstream fin;
     fin.open(vmfile);
     tk = token;
-    input_filename = getNameStem(vmfile);
+    input_filename_stem = getNameStem(vmfile);
 }
 
 void Parser::parse()
@@ -97,9 +97,9 @@ void Parser::closeFstream()
     fin.close();
 }
 
-std::string Parser::getInputFileName()
+std::string Parser::getInputFileNameStem()
 {
-    return input_filename;
+    return input_filename_stem;
 }
 
 std::string Parser::getCmdLine()

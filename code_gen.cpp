@@ -231,7 +231,7 @@ void CodeGenerator::writePush(int command, int arg1, int arg2)
                            "M=D\n"
                            "@SP\n"
                            "M=M+1\n",
-                _parser->getInputFileName().c_str(), arg2);
+                _parser->getInputFileNameStem().c_str(), arg2);
         break;
 
     default:
@@ -331,7 +331,7 @@ void CodeGenerator::writePop(int command, int arg1, int arg2)
                            "D=M\n"
                            "@%s.%d\n"
                            "M=D\n",
-                _parser->getInputFileName().c_str(), arg2);
+                _parser->getInputFileNameStem().c_str(), arg2);
         break;
 
     default:
