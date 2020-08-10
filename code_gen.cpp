@@ -43,6 +43,12 @@ void CodeGenerator::writeHack()
     case Token::C_IF:
         writeIf(_parser->getLabel());
         break;
+    case Token::C_FUNCTION:
+        writeFunction(_parser->getLabel(), _parser->getArg2());
+        break;
+    case Token::C_RETURN:
+        writeReturn();
+        break;
     default:
         break;
     }
@@ -365,4 +371,61 @@ void CodeGenerator::writeIf(std::string label)
                        "@%s\n"
                        "D;JGT\n", // True branching(D=111...111).
             prefix_label.c_str());
+}
+
+void CodeGenerator::writeFunction(std::string label, int num_locals)
+{
+    std::string prefix_label = _parser->getInputFileNameStem() + "." + label;
+    fprintf(_hackfile, "(%s)\n"
+                       "@%d\n"
+                       "D=A\n"
+                       "(%s.INIT_LOCALS.LOOP)\n"
+                       "@%s.INIT_LOCALS.END\n"
+                       "D;JEQ\n"
+                       "@SP\n"
+                       "A=M\n"
+                       "M=0\n"
+                       "@SP\n"
+                       "M=M+1\n"
+                       "D=D-1\n"
+                       "@%s.INIT_LOCALS.LOOP\n"
+                       "0;JMP\n"
+                       "(%s.INIT_LOCALS.END)\n", // True branching(D=111...111).
+            prefix_label.c_str(), num_locals, prefix_label.c_str(), prefix_label.c_str(),
+            prefix_label.c_str(), prefix_label.c_str());
+}
+
+void CodeGenerator::writeCall(std::string label, int num_args)
+{
+}
+
+void CodeGenerator::writeReturn()
+{
+    std::cout << "return!" << std::endl;
+    fprintf(_hackfile, "@LCL\n"
+                       "D=M\n"
+                       "@endFrame\n"
+                       "M=D\n" // endFrame = LCL
+                       "D=D-5\n"
+                       "@retAddr\n"
+                       "M=D\n" // retAddr = *(endFrame - 5)
+    );
+    writePop(Token::POP, Token::ARGUMENT, 0); // *ARG = pop()
+    fprintf(_hackfile, "@ARG\n"
+                       "D=M\n"
+                       "@SP\n"
+                       "M=D+1\n" // SP = ARG + 1
+                       "@endFrame\n"
+                       "D=M\n"
+                       "@THAT\n"
+                       "M=D-1\n" // THAT = *(endFrame - 1)
+                       "@THIS\n"
+                       "M=D-2\n" // THIS = *(endFrame - 2)
+                       "@ARG\n"
+                       "M=D-3\n" // ARG = *(endFrame - 3)
+                       "@LCL\n"
+                       "M=D-4\n" // LCL = *(endFrame - 4)
+                       "@retAddr\n"
+                       "0;JMP\n" // goto retAddr
+    );
 }

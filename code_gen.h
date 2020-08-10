@@ -32,4 +32,7 @@ public:
     void writeLabel(std::string label);
     void writeGoto(std::string label);
     void writeIf(std::string label);
+    void writeFunction(std::string label, int num_locals);
+    void writeReturn();
+    void writeCall(std::string label, int num_args);
 };
