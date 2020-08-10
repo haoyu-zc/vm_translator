@@ -376,6 +376,8 @@ void CodeGenerator::writeIf(std::string label)
 void CodeGenerator::writeFunction(std::string label, int num_locals)
 {
     std::string prefix_label = _parser->getInputFileNameStem() + "." + label;
+    // Convert to upper case.
+    std::transform(prefix_label.begin(), prefix_label.end(),prefix_label.begin(), ::toupper);
     fprintf(_hackfile, "(%s)\n"
                        "@%d\n"
                        "D=A\n"
@@ -401,12 +403,12 @@ void CodeGenerator::writeCall(std::string label, int num_args)
 
 void CodeGenerator::writeReturn()
 {
-    std::cout << "return!" << std::endl;
     fprintf(_hackfile, "@LCL\n"
                        "D=M\n"
                        "@endFrame\n"
                        "M=D\n" // endFrame = LCL
-                       "D=D-5\n"
+                       "@5\n"
+                       "D=D-A\n"
                        "@retAddr\n"
                        "M=D\n" // retAddr = *(endFrame - 5)
     );
@@ -418,14 +420,19 @@ void CodeGenerator::writeReturn()
                        "@endFrame\n"
                        "D=M\n"
                        "@THAT\n"
-                       "M=D-1\n" // THAT = *(endFrame - 1)
+                       "D=D-1\n"
+                       "M=D\n" // THAT = *(endFrame - 1)
                        "@THIS\n"
-                       "M=D-2\n" // THIS = *(endFrame - 2)
+                       "D=D-1\n"
+                       "M=D\n" // THIS = *(endFrame - 2)
                        "@ARG\n"
-                       "M=D-3\n" // ARG = *(endFrame - 3)
+                       "D=D-1\n"
+                       "M=D\n" // ARG = *(endFrame - 3)
                        "@LCL\n"
-                       "M=D-4\n" // LCL = *(endFrame - 4)
+                       "D=D-1\n"
+                       "M=D\n" // LCL = *(endFrame - 4)
                        "@retAddr\n"
                        "0;JMP\n" // goto retAddr
     );
+    
 }
