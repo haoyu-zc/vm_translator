@@ -25,7 +25,7 @@ std::string getNameStem(const std::string &filepath)
         seppos = filepath.rfind("/");
     if (seppos == std::string::npos)
         throw invalid_argument("Invalid input path!\n");
-    return filepath.substr(seppos + 1, dotpos - seppos + 1);
+    return filepath.substr(seppos + 1, dotpos - seppos - 1);
 }
 
 std::string getFilepath(const std::string filepath)
