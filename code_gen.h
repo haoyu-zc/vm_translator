@@ -22,7 +22,7 @@ public:
     void writeArithmetic(int command);
     // Generate code of EQ, GT and LT
     void writeCompa(std::string compa_prediacte);
-    void writePush(int command, int arg1, int arg2);
+    void writePush(int arg1, int arg2);
     void writePushTemplate(const char *segment, int arg2);
     void writePopTemplate(const char *segment, int arg2);
     void writePop(int command, int arg1, int arg2);

@@ -26,7 +26,7 @@ void CodeGenerator::writeHack()
     switch (_parser->getCommandType())
     {
     case Token::C_PUSH:
-        writePush(_parser->getCommand(), _parser->getArg1(), _parser->getArg2());
+        writePush(_parser->getArg1(), _parser->getArg2());
         break;
     case Token::C_POP:
         writePop(_parser->getCommand(), _parser->getArg1(), _parser->getArg2());
@@ -180,7 +180,7 @@ void CodeGenerator::writePushTemplate(const char *segment, int arg2)
         fprintf(_hackfile, push_template1, arg2, segment);
 }
 
-void CodeGenerator::writePush(int command, int arg1, int arg2)
+void CodeGenerator::writePush(int arg1, int arg2)
 {
     switch (arg1)
     {
@@ -352,12 +352,14 @@ void CodeGenerator::writeInit()
 void CodeGenerator::writeLabel(std::string label)
 {
     std::string prefix_label = _parser->getInputFileNameStem() + "." + label;
+    std::transform(prefix_label.begin(), prefix_label.end(), prefix_label.begin(), ::toupper);
     fprintf(_hackfile, "(%s)\n", prefix_label.c_str());
 }
 
 void CodeGenerator::writeGoto(std::string label)
 {
     std::string prefix_label = _parser->getInputFileNameStem() + "." + label;
+    std::transform(prefix_label.begin(), prefix_label.end(), prefix_label.begin(), ::toupper);
     fprintf(_hackfile, "@%s\n"
                        "0;JMP\n",
             prefix_label.c_str());
@@ -366,6 +368,7 @@ void CodeGenerator::writeGoto(std::string label)
 void CodeGenerator::writeIf(std::string label)
 {
     std::string prefix_label = _parser->getInputFileNameStem() + "." + label;
+    std::transform(prefix_label.begin(), prefix_label.end(), prefix_label.begin(), ::toupper);
     fprintf(_hackfile, "AM=M-1\n"
                        "D=M\n"
                        "@%s\n"
@@ -377,30 +380,20 @@ void CodeGenerator::writeFunction(std::string label, int num_locals)
 {
     std::string prefix_label = _parser->getInputFileNameStem() + "." + label;
     // Convert to upper case.
-    std::transform(prefix_label.begin(), prefix_label.end(),prefix_label.begin(), ::toupper);
-    fprintf(_hackfile, "(%s)\n"
-                       "@%d\n"
-                       "D=A\n"
-                       "(%s.INIT_LOCALS.LOOP)\n"
-                       "@%s.INIT_LOCALS.END\n"
-                       "D;JEQ\n"
-                       "@SP\n"
-                       "A=M\n"
-                       "M=0\n"
-                       "@SP\n"
-                       "M=M+1\n"
-                       "D=D-1\n"
-                       "@%s.INIT_LOCALS.LOOP\n"
-                       "0;JMP\n"
-                       "(%s.INIT_LOCALS.END)\n", // True branching(D=111...111).
-            prefix_label.c_str(), num_locals, prefix_label.c_str(), prefix_label.c_str(),
-            prefix_label.c_str(), prefix_label.c_str());
+    std::transform(prefix_label.begin(), prefix_label.end(), prefix_label.begin(), ::toupper);
+    fprintf(_hackfile, "(%s)\n", prefix_label.c_str());
+    while (num_locals != 0)
+    {
+        writePush(Token::CONSTANT, 0);
+        num_locals--;
+    }
 }
 
 void CodeGenerator::writeCall(std::string label, int num_args)
 {
 }
 
+std::string pointer_template = "";
 void CodeGenerator::writeReturn()
 {
     fprintf(_hackfile, "@LCL\n"
@@ -434,5 +427,4 @@ void CodeGenerator::writeReturn()
                        "@retAddr\n"
                        "0;JMP\n" // goto retAddr
     );
-    
 }
