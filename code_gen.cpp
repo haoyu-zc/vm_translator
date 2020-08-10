@@ -345,21 +345,24 @@ void CodeGenerator::writeInit()
 
 void CodeGenerator::writeLabel(std::string label)
 {
-    fprintf(_hackfile, "(%s)\n", label.c_str());
+    std::string prefix_label = _parser->getInputFileNameStem() + "." + label;
+    fprintf(_hackfile, "(%s)\n", prefix_label.c_str());
 }
 
 void CodeGenerator::writeGoto(std::string label)
 {
+    std::string prefix_label = _parser->getInputFileNameStem() + "." + label;
     fprintf(_hackfile, "@%s\n"
                        "0;JMP\n",
-            label.c_str());
+            prefix_label.c_str());
 }
 
 void CodeGenerator::writeIf(std::string label)
 {
+    std::string prefix_label = _parser->getInputFileNameStem() + "." + label;
     fprintf(_hackfile, "AM=M-1\n"
                        "D=M\n"
                        "@%s\n"
                        "D;JGT\n", // True branching(D=111...111).
-            label.c_str());
+            prefix_label.c_str());
 }
