@@ -33,9 +33,6 @@ void Parser::parse()
     {
     case Token::C_ARITHMETIC:
         break;
-    case Token::C_RETURN:
-        // std::cout << "error";
-        break;
     case Token::C_PUSH:
         arg1 = tk.getToken(str_frags[1]);
         arg2 = stoi((str_frags[2]));
@@ -49,6 +46,14 @@ void Parser::parse()
         label = str_frags[1];
     case Token::C_IF:
         label = str_frags[1];
+    case Token::C_FUNCTION:
+        label = str_frags[1];
+        arg2 = stoi((str_frags[2]));
+    case Token::C_RETURN:
+        break;
+    case Token::C_CALL:
+        label = str_frags[1];
+        arg2 = stoi((str_frags[2]));
     default:
         break;
     }
