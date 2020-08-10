@@ -393,38 +393,44 @@ void CodeGenerator::writeCall(std::string label, int num_args)
 {
 }
 
+const std::string pointer_array[] = {"THAT", "THIS", "ARG", "LCL"};
 std::string pointer_template = "";
 void CodeGenerator::writeReturn()
 {
+    for (const std::string& pointer : pointer_array)
+    {
+        pointer_template += std::string("@endFrame\n")
+                         +  "D=M-1\n"
+                         +  "AM=D\n"
+                         +  "D=M\n"
+                         +  "@" + pointer + "\n"
+                         +  "M=D\n";
+    }
     fprintf(_hackfile, "@LCL\n"
                        "D=M\n"
                        "@endFrame\n"
                        "M=D\n" // endFrame = LCL
                        "@5\n"
-                       "D=D-A\n"
+                       "A=D-A\n"
+                       "D=M\n"
                        "@retAddr\n"
                        "M=D\n" // retAddr = *(endFrame - 5)
     );
-    writePop(Token::POP, Token::ARGUMENT, 0); // *ARG = pop()
-    fprintf(_hackfile, "@ARG\n"
+    //writePop(Token::POP, Token::ARGUMENT, 0); // *ARG = pop()
+    fprintf(_hackfile, "@SP\n"
+                       "AM=M-1\n"
                        "D=M\n"
-                       "@SP\n"
-                       "M=D+1\n" // SP = ARG + 1
-                       "@endFrame\n"
-                       "D=M\n"
-                       "@THAT\n"
-                       "D=D-1\n"
-                       "M=D\n" // THAT = *(endFrame - 1)
-                       "@THIS\n"
-                       "D=D-1\n"
-                       "M=D\n" // THIS = *(endFrame - 2)
                        "@ARG\n"
-                       "D=D-1\n"
-                       "M=D\n" // ARG = *(endFrame - 3)
-                       "@LCL\n"
-                       "D=D-1\n"
-                       "M=D\n" // LCL = *(endFrame - 4)
-                       "@retAddr\n"
+                       "A=M\n"
+                       "M=D\n" // *ARG = pop()
+                       "@ARG\n"
+                       "D=M+1\n"
+                       "@SP\n"
+                       "M=D\n" // SP = ARG + 1
+    );
+    fprintf(_hackfile, pointer_template.c_str());
+    fprintf(_hackfile, "@retAddr\n"
+                       "A=M\n"
                        "0;JMP\n" // goto retAddr
     );
 }
