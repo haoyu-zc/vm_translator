@@ -49,6 +49,9 @@ void CodeGenerator::writeHack()
     case Token::C_RETURN:
         writeReturn();
         break;
+    case Token::C_CALL:
+        writeCall(_parser->getLabel(), _parser->getArg2());
+        break;
     default:
         break;
     }
@@ -382,6 +385,7 @@ void CodeGenerator::writeFunction(std::string label, int num_locals)
     // Convert to upper case.
     std::transform(prefix_label.begin(), prefix_label.end(), prefix_label.begin(), ::toupper);
     fprintf(_hackfile, "(%s)\n", prefix_label.c_str());
+    // Initialize
     while (num_locals != 0)
     {
         writePush(Token::CONSTANT, 0);
@@ -389,22 +393,86 @@ void CodeGenerator::writeFunction(std::string label, int num_locals)
     }
 }
 
+int call_index = 0;
+const std::string pointer_array_call[] = {"LCL", "ARG", "THIS", "THAT"};
+std::string push_template_call = "";
+std::string pointer_template_call = "";
 void CodeGenerator::writeCall(std::string label, int num_args)
 {
+    std::string prefix_label = _parser->getInputFileNameStem() + "." + label;
+    // Convert to upper case.
+    std::transform(prefix_label.begin(), prefix_label.end(), prefix_label.begin(), ::toupper);
+
+    for (const std::string &pointer : pointer_array_call)
+    {
+        pointer_template_call += std::string("@") + pointer + "\n" +
+                                 "A=M\n" +
+                                 "D=M\n" +
+                                 "@SP\n" +
+                                 "A=M\n" +
+                                 "M=D\n" +
+                                 "@SP\n" +
+                                 "M=M+1\n";
+    }
+
+    // push returnAddress
+    fprintf(_hackfile, "@RETADDR%d\n"
+                       "D=M\n"
+                       "@SP\n"
+                       "A=M\n"
+                       "M=D\n"
+                       "@SP\n"
+                       "M=M+1\n",
+            call_index);
+
+    // push LCL, ARG, THIS, THAT
+    fprintf(_hackfile, pointer_template_call.c_str());
+
+    // ARG = SP - 5 -nArgs
+    fprintf(_hackfile, "@%d\n"
+                       "D=A\n"
+                       "@5\n"
+                       "D=D+A\n"
+                       "@SP\n"
+                       "A=M\n"
+                       "D=M-D\n"
+                       "@ARG\n"
+                       "A=M\n"
+                       "M=D\n",
+            num_args);
+
+    // LCL = SP
+    fprintf(_hackfile, "@SP\n"
+                       "A=M\n"
+                       "D=M\n"
+                       "@LCL\n"
+                       "A=M\n"
+                       "M=D\n");
+
+    // goto functionName
+    fprintf(_hackfile, "@%s\n"
+                       "0;JMP\n",
+            prefix_label.c_str());
+
+    // write label for return address
+    fprintf(_hackfile, "(RETADDR%d)\n", call_index);
+    call_index++;
 }
 
 const std::string pointer_array[] = {"THAT", "THIS", "ARG", "LCL"};
 std::string pointer_template = "";
 void CodeGenerator::writeReturn()
 {
-    for (const std::string& pointer : pointer_array)
+    for (const std::string &pointer : pointer_array)
     {
-        pointer_template += std::string("@endFrame\n")
-                         +  "D=M-1\n"
-                         +  "AM=D\n"
-                         +  "D=M\n"
-                         +  "@" + pointer + "\n"
-                         +  "M=D\n";
+        pointer_template += std::string("@endFrame\n") +
+                            "D=M-1\n" +
+                            "AM=D\n" +
+                            "D=M\n" +
+                            "@" +
+                            pointer +
+                            "\n" +
+                            "M=D\n";
     }
     fprintf(_hackfile, "@LCL\n"
                        "D=M\n"
