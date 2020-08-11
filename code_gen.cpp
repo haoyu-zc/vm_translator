@@ -350,6 +350,11 @@ void CodeGenerator::writePop(int command, int arg1, int arg2)
 
 void CodeGenerator::writeInit()
 {
+    fprintf(_hackfile, "@256\n"
+                       "D=A\n"
+                       "@SP\n"
+                       "M=D\n");
+    writeCall("Sys.init", 0);
 }
 
 void CodeGenerator::writeLabel(std::string label)
