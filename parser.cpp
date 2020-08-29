@@ -40,20 +40,26 @@ void Parser::parse()
     case Token::C_POP:
         arg1 = tk.getToken(str_frags[1]);
         arg2 = stoi((str_frags[2]));
+        break;
     case Token::C_LABEL:
         label = str_frags[1];
+        break;
     case Token::C_GOTO:
         label = str_frags[1];
+        break;
     case Token::C_IF:
         label = str_frags[1];
+        break;
     case Token::C_FUNCTION:
         label = str_frags[1];
         arg2 = stoi((str_frags[2]));
+        break;
     case Token::C_RETURN:
         break;
     case Token::C_CALL:
         label = str_frags[1];
         arg2 = stoi((str_frags[2]));
+        break;
     default:
         break;
     }
