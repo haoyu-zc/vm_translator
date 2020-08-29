@@ -1,14 +1,15 @@
 #pragma once
 #include <string>
+#include <filesystem>
 
-using std::string;
+namespace fsys = std::filesystem;
 
-string getExtension(const std::string &filepath);
+std::string getExtension(const std::string &filepath);
 
 std::string getNameStem(const std::string &filepath);
 
-string getName(const std::string &filepath);
-
-std::string getFilepath(const std::string filepath);
+std::string getName(const std::string &filepath);
 
 void validateFileName(const std::string &filepath);
+
+std::string rmExtension(const std::string &filepath);

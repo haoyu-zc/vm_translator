@@ -32,7 +32,7 @@ int main(int argc, char *argv[])
     }
     else
     {
-        fp = fopen((getFilepath(filepath_in) + ".asm").c_str(), "w");
+        fp = fopen((rmExtension(filepath_in) + ".asm").c_str(), "w");
     }
 
     // Parser for vm files.
