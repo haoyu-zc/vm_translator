@@ -19,8 +19,8 @@ Parser::Parser(std::string vmfile, Token &token)
 void Parser::parse()
 {
     std::istringstream line(currentCmdLine);
-    str_frags = {std::istream_iterator<string>{line},
-                 std::istream_iterator<string>{}};
+    str_frags = {std::istream_iterator<std::string>{line},
+                 std::istream_iterator<std::string>{}};
     // Test
     // for (auto &str : str_frags)
     //     std::cout << str + " ";
@@ -70,7 +70,7 @@ bool Parser::hasMoreCommands()
 // Variables for advance()
 void Parser::advance()
 {
-    string line;
+    std::string line;
     getline(fin, line);
     line = removeComments(line);
     line = trimOuterSpaces(line);
