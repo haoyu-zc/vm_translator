@@ -36,6 +36,8 @@ int main(int argc, char *argv[])
     Token tk;
     auto fsys_path = fsys::path(filepath_in);
 
+
+    // Directory
     if (fsys::is_directory(fsys_path))
     {
         // Use directory name as output asm file name.
@@ -59,17 +61,21 @@ int main(int argc, char *argv[])
             }
         fclose(fp);
     }
-
-    // Parser parser(filepath_in, tk);
-    // CodeGenerator cg(fp, &parser);
-    // while (parser.hasMoreCommands())
-    // {
-    //     parser.advance();
-    //     parser.parse();
-    //     cg.writeHack();
-    // }
-    // fclose(fp);
-    // parser.closeFstream();
+    else    // Single file
+    {
+        if (!specified_out_name)
+            fp = fopen((getNameStem(filepath_in) + ".asm").c_str(), "w");
+        Parser parser(filepath_in, tk);
+        CodeGenerator cg(fp, &parser);
+        while (parser.hasMoreCommands())
+        {
+            parser.advance();
+            parser.parse();
+            cg.writeHack();
+        }
+        fclose(fp);
+        parser.closeFstream();
+    }
 
     return 0;
 }
