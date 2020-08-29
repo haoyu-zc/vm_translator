@@ -12,6 +12,12 @@
 #include "token.h"
 #include <stdio.h>
 
+// Constructor without refering to a parser. Used for write initial codes.
+CodeGenerator::CodeGenerator(FILE *file)
+{
+    _hackfile = file;
+}
+
 CodeGenerator::CodeGenerator(FILE *file, Parser *parser)
 {
     _hackfile = file;
@@ -350,11 +356,12 @@ void CodeGenerator::writePop(int command, int arg1, int arg2)
 
 void CodeGenerator::writeInit()
 {
+    fprintf(_hackfile, "// SP=256\n");
     fprintf(_hackfile, "@256\n"
                        "D=A\n"
                        "@SP\n"
                        "M=D\n");
-    writeCall("Sys.init", 0);
+    writeInitCall("Sys.Sys.init", 0);
 }
 
 void CodeGenerator::writeLabel(std::string label)
@@ -407,6 +414,70 @@ void CodeGenerator::writeCall(std::string label, int num_args)
     std::string prefix_label = _parser->getInputFileNameStem() + "." + label;
     // Convert to upper case.
     std::transform(prefix_label.begin(), prefix_label.end(), prefix_label.begin(), ::toupper);
+
+    for (const std::string &pointer : pointer_array_call)
+    {
+        pointer_template_call += std::string("@") + pointer + "\n" +
+                                 "A=M\n" +
+                                 "D=M\n" +
+                                 "@SP\n" +
+                                 "A=M\n" +
+                                 "M=D\n" +
+                                 "@SP\n" +
+                                 "M=M+1\n";
+    }
+
+    // push returnAddress
+    fprintf(_hackfile, "@RETADDR%d\n"
+                       "D=M\n"
+                       "@SP\n"
+                       "A=M\n"
+                       "M=D\n"
+                       "@SP\n"
+                       "M=M+1\n",
+            call_index);
+
+    // push LCL, ARG, THIS, THAT
+    fprintf(_hackfile, pointer_template_call.c_str());
+
+    // ARG = SP - 5 -nArgs
+    fprintf(_hackfile, "@%d\n"
+                       "D=A\n"
+                       "@5\n"
+                       "D=D+A\n"
+                       "@SP\n"
+                       "A=M\n"
+                       "D=M-D\n"
+                       "@ARG\n"
+                       "A=M\n"
+                       "M=D\n",
+            num_args);
+
+    // LCL = SP
+    fprintf(_hackfile, "@SP\n"
+                       "A=M\n"
+                       "D=M\n"
+                       "@LCL\n"
+                       "A=M\n"
+                       "M=D\n");
+
+    // goto functionName
+    fprintf(_hackfile, "@%s\n"
+                       "0;JMP\n",
+            prefix_label.c_str());
+
+    // write label for return address
+    fprintf(_hackfile, "(RETADDR%d)\n", call_index);
+    call_index++;
+}
+
+void CodeGenerator::writeInitCall(std::string label, int num_args)
+{
+    std::string prefix_label = label;
+    // Convert to upper case.
+    std::transform(prefix_label.begin(), prefix_label.end(), prefix_label.begin(), ::toupper);
+
+    fprintf(_hackfile, "// call Sys.init\n");
 
     for (const std::string &pointer : pointer_array_call)
     {

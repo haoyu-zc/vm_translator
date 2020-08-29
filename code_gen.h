@@ -17,6 +17,7 @@ private:
     int index = 0;
 
 public:
+    CodeGenerator(FILE *file);
     CodeGenerator(FILE *file, Parser *parser);
     void writeHack();
     void writeArithmetic(int command);
@@ -35,4 +36,5 @@ public:
     void writeFunction(std::string label, int num_locals);
     void writeReturn();
     void writeCall(std::string label, int num_args);
+    void writeInitCall(std::string label, int num_args);
 };
