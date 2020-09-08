@@ -469,22 +469,21 @@ void CodeGenerator::writeCall(std::string label, int num_args)
     call_index++;
 }
 
-
 const std::string pointer_array[] = {"THAT", "THIS", "ARG", "LCL"};
 std::string pointer_template = "";
 void CodeGenerator::writeReturn()
 {
-    for (const std::string &pointer : pointer_array)
-    {
-        pointer_template += std::string("@endFrame\n") +
-                            "D=M-1\n" +
-                            "AM=D\n" +
-                            "D=M\n" +
-                            "@" +
-                            pointer +
-                            "\n" +
-                            "M=D\n";
-    }
+    // for (const std::string &pointer : pointer_array)
+    // {
+    //     pointer_template += std::string("@endFrame\n") +
+    //                         "D=M-1\n" +
+    //                         "AM=D\n" +
+    //                         "D=M\n" +
+    //                         "@" +
+    //                         pointer +
+    //                         "\n" +
+    //                         "M=D\n";
+    // }
     fprintf(_hackfile, "@LCL\n"
                        "D=M\n"
                        "@endFrame\n"
@@ -495,21 +494,41 @@ void CodeGenerator::writeReturn()
                        "@retAddr\n"
                        "M=D\n" // retAddr = *(endFrame - 5)
     );
-    //writePop(Token::POP, Token::ARGUMENT, 0); // *ARG = pop()
-    fprintf(_hackfile, "@SP\n"
-                       "AM=M-1\n"
-                       "D=M\n"
-                       "@ARG\n"
-                       "A=M\n"
-                       "M=D\n" // *ARG = pop()
-                       "@ARG\n"
-                       "D=M+1\n"
-                       "@SP\n"
-                       "M=D\n" // SP = ARG + 1
-    );
-    fprintf(_hackfile, pointer_template.c_str());
+
+    writePop(Token::POP, Token::ARGUMENT, 0); // *ARG = pop()
+                                              // fprintf(_hackfile, "@SP\n"
+                                              //                    "AM=M-1\n"
+                                              //                    "D=M\n"
+                                              //                    "@ARG\n"
+                                              //                    "A=M\n"
+                                              //                    "M=D\n" // *ARG = pop()
+                                              //                    "@ARG\n"
+                                              //                    "D=M+1\n"
+                                              //                    "@SP\n"
+                                              //                    "M=D\n" // SP = ARG + 1
+                                              // );
+
+    // fprintf(_hackfile, pointer_template.c_str());
+
+    writeFrameRestore("THAT", 1);
+    writeFrameRestore("THIS", 2);
+    writeFrameRestore("ARG", 3);
+    writeFrameRestore("LCL", 4);
+
     fprintf(_hackfile, "@retAddr\n"
                        "A=M\n"
                        "0;JMP\n" // goto retAddr
     );
+}
+
+void CodeGenerator::writeFrameRestore(std::string segment, int minus)
+{
+    fprintf(_hackfile, "@endFrame\n"
+                       "D=M\n"
+                       "@%d\n"
+                       "A=D-A\n"
+                       "D=M\n"
+                       "@%s\n"
+                       "M=D\n",
+            minus, segment.c_str());
 }
