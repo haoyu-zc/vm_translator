@@ -361,7 +361,7 @@ void CodeGenerator::writeInit()
                        "D=A\n"
                        "@SP\n"
                        "M=D\n");
-    writeInitCall("Sys.Sys.init", 0);
+    writeInitCall("Sys.init", 0);
 }
 
 void CodeGenerator::writeLabel(std::string label)
@@ -393,10 +393,9 @@ void CodeGenerator::writeIf(std::string label)
 
 void CodeGenerator::writeFunction(std::string label, int num_locals)
 {
-    std::string prefix_label = _parser->getInputFileNameStem() + "." + label;
     // Convert to upper case.
-    std::transform(prefix_label.begin(), prefix_label.end(), prefix_label.begin(), ::toupper);
-    fprintf(_hackfile, "(%s)\n", prefix_label.c_str());
+    std::transform(label.begin(), label.end(), label.begin(), ::toupper);
+    fprintf(_hackfile, "(%s)\n", label.c_str());
     // Initialize
     while (num_locals != 0)
     {
@@ -411,9 +410,8 @@ std::string push_template_call = "";
 std::string pointer_template_call = "";
 void CodeGenerator::writeCall(std::string label, int num_args)
 {
-    std::string prefix_label = _parser->getInputFileNameStem() + "." + label;
     // Convert to upper case.
-    std::transform(prefix_label.begin(), prefix_label.end(), prefix_label.begin(), ::toupper);
+    std::transform(label.begin(), label.end(), label.begin(), ::toupper);
 
     for (const std::string &pointer : pointer_array_call)
     {
@@ -464,7 +462,7 @@ void CodeGenerator::writeCall(std::string label, int num_args)
     // goto functionName
     fprintf(_hackfile, "@%s\n"
                        "0;JMP\n",
-            prefix_label.c_str());
+            label.c_str());
 
     // write label for return address
     fprintf(_hackfile, "(RETADDR%d)\n", call_index);
