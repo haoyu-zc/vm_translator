@@ -33,7 +33,7 @@ std::string trimOuterSpaces(const std::string &s)
 std::string removeComments(const std::string &s)
 {
     // Remove "//" comments and spaces in the front.
-    std::string pattern_comt = "\\W*//.+";
+    std::string pattern_comt = "\\W*//.*";
     std::regex r_comt(pattern_comt);
     std::string fmt = "";
     return regex_replace(s, r_comt, fmt);
