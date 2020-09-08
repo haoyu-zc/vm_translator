@@ -361,7 +361,7 @@ void CodeGenerator::writeInit()
                        "D=A\n"
                        "@SP\n"
                        "M=D\n");
-    writeInitCall("Sys.init", 0);
+    writeCall("Sys.init", 0);
 }
 
 void CodeGenerator::writeLabel(std::string label)
@@ -426,14 +426,14 @@ void CodeGenerator::writeCall(std::string label, int num_args)
     }
 
     // push returnAddress
-    fprintf(_hackfile, "@RETADDR%d\n"
+    fprintf(_hackfile, "@RETADDR.%s.%d\n"
                        "D=M\n"
                        "@SP\n"
                        "A=M\n"
                        "M=D\n"
                        "@SP\n"
                        "M=M+1\n",
-            call_index);
+            label.c_str(), call_index);
 
     // push LCL, ARG, THIS, THAT
     fprintf(_hackfile, pointer_template_call.c_str());
@@ -465,73 +465,10 @@ void CodeGenerator::writeCall(std::string label, int num_args)
             label.c_str());
 
     // write label for return address
-    fprintf(_hackfile, "(RETADDR%d)\n", call_index);
+    fprintf(_hackfile, "(RETADDR.%s.%d)\n", label.c_str(), call_index);
     call_index++;
 }
 
-void CodeGenerator::writeInitCall(std::string label, int num_args)
-{
-    std::string prefix_label = label;
-    // Convert to upper case.
-    std::transform(prefix_label.begin(), prefix_label.end(), prefix_label.begin(), ::toupper);
-
-    fprintf(_hackfile, "// call Sys.init\n");
-
-    for (const std::string &pointer : pointer_array_call)
-    {
-        pointer_template_call += std::string("@") + pointer + "\n" +
-                                 "A=M\n" +
-                                 "D=M\n" +
-                                 "@SP\n" +
-                                 "A=M\n" +
-                                 "M=D\n" +
-                                 "@SP\n" +
-                                 "M=M+1\n";
-    }
-
-    // push returnAddress
-    fprintf(_hackfile, "@RETADDR%d\n"
-                       "D=M\n"
-                       "@SP\n"
-                       "A=M\n"
-                       "M=D\n"
-                       "@SP\n"
-                       "M=M+1\n",
-            call_index);
-
-    // push LCL, ARG, THIS, THAT
-    fprintf(_hackfile, pointer_template_call.c_str());
-
-    // ARG = SP - 5 -nArgs
-    fprintf(_hackfile, "@%d\n"
-                       "D=A\n"
-                       "@5\n"
-                       "D=D+A\n"
-                       "@SP\n"
-                       "A=M\n"
-                       "D=M-D\n"
-                       "@ARG\n"
-                       "A=M\n"
-                       "M=D\n",
-            num_args);
-
-    // LCL = SP
-    fprintf(_hackfile, "@SP\n"
-                       "A=M\n"
-                       "D=M\n"
-                       "@LCL\n"
-                       "A=M\n"
-                       "M=D\n");
-
-    // goto functionName
-    fprintf(_hackfile, "@%s\n"
-                       "0;JMP\n",
-            prefix_label.c_str());
-
-    // write label for return address
-    fprintf(_hackfile, "(RETADDR%d)\n", call_index);
-    call_index++;
-}
 
 const std::string pointer_array[] = {"THAT", "THIS", "ARG", "LCL"};
 std::string pointer_template = "";
