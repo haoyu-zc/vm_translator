@@ -416,7 +416,7 @@ void CodeGenerator::writeCall(std::string label, int num_args)
     for (const std::string &pointer : pointer_array_call)
     {
         pointer_template_call += std::string("@") + pointer + "\n" +
-                                 "A=M\n" +
+                                 //  "A=M\n" +
                                  "D=M\n" +
                                  "@SP\n" +
                                  "A=M\n" +
@@ -436,7 +436,11 @@ void CodeGenerator::writeCall(std::string label, int num_args)
             label.c_str(), call_index);
 
     // push LCL, ARG, THIS, THAT
-    fprintf(_hackfile, pointer_template_call.c_str());
+    // fprintf(_hackfile, pointer_template_call.c_str());
+    writePush("LCL");
+    writePush("ARG");
+    writePush("THIS");
+    writePush("THAT");
 
     // ARG = SP - 5 -nArgs
     fprintf(_hackfile, "@%d\n"
@@ -469,6 +473,18 @@ void CodeGenerator::writeCall(std::string label, int num_args)
     call_index++;
 }
 
+void CodeGenerator::writePush(std::string segment)
+{
+    fprintf(_hackfile, "@%s\n"
+                       "D=M\n"
+                       "@SP\n"
+                       "A=M\n"
+                       "M=D\n"
+                       "@SP\n"
+                       "M=M+1\n",
+            segment.c_str(), segment.c_str());
+}
+
 const std::string pointer_array[] = {"THAT", "THIS", "ARG", "LCL"};
 std::string pointer_template = "";
 void CodeGenerator::writeReturn()
@@ -495,18 +511,19 @@ void CodeGenerator::writeReturn()
                        "M=D\n" // retAddr = *(endFrame - 5)
     );
 
-    writePop(Token::POP, Token::ARGUMENT, 0); // *ARG = pop()
-                                              // fprintf(_hackfile, "@SP\n"
-                                              //                    "AM=M-1\n"
-                                              //                    "D=M\n"
-                                              //                    "@ARG\n"
-                                              //                    "A=M\n"
-                                              //                    "M=D\n" // *ARG = pop()
-                                              //                    "@ARG\n"
-                                              //                    "D=M+1\n"
-                                              //                    "@SP\n"
-                                              //                    "M=D\n" // SP = ARG + 1
-                                              // );
+    // writePop(Token::POP, Token::ARGUMENT, 0); // *ARG = pop()
+    // fprintf(_hackfile, "@SP\n"
+    //                    "AM=M-1\n"
+    //                    "D=M\n"
+    //                    "@ARG\n"
+    //                    "A=M\n"
+    //                    "M=D\n" // *ARG = pop()
+    //                    "@ARG\n"
+    //                    "D=M+1\n"
+    //                    "@SP\n"
+    //                    "M=D\n" // SP = ARG + 1
+    // );
+    writePop("ARG");
 
     // fprintf(_hackfile, pointer_template.c_str());
 
@@ -519,6 +536,21 @@ void CodeGenerator::writeReturn()
                        "A=M\n"
                        "0;JMP\n" // goto retAddr
     );
+}
+
+void CodeGenerator::writePop(std::string segment)
+{
+    fprintf(_hackfile, "@SP\n"
+                       "AM=M-1\n"
+                       "D=M\n"
+                       "@%s\n"
+                       "A=M\n"
+                       "M=D\n"
+                       "@%s\n"
+                       "D=M+1\n"
+                       "@SP\n"
+                       "M=D\n",
+            segment.c_str(), segment.c_str());
 }
 
 void CodeGenerator::writeFrameRestore(std::string segment, int minus)

@@ -38,4 +38,6 @@ public:
     void writeCall(std::string label, int num_args);
     void writeInitCall(std::string label, int num_args);
     void writeFrameRestore(std::string segment, int minus);
+    void writePop(std::string segment);
+    void writePush(std::string segment);
 };
