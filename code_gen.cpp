@@ -408,27 +408,27 @@ int call_index = 0;
 const std::string pointer_array_call[] = {"LCL", "ARG", "THIS", "THAT"};
 std::string push_template_call = "";
 std::string pointer_template_call = "";
-void CodeGenerator::writeCall(std::string label, int num_args)
+void CodeGenerator::writeCall(std::string func_name, int num_args)
 {
     // Convert to upper case.
-    std::transform(label.begin(), label.end(), label.begin(), ::toupper);
-    std::string ret_label = "RETADDR" + label + "." + std::to_string(num_args);
+    std::transform(func_name.begin(), func_name.end(), func_name.begin(), ::toupper);
+    std::string ret_label = "RETADDR" + func_name + "." + std::to_string(num_args);
 
-    for (const std::string &pointer : pointer_array_call)
-    {
-        pointer_template_call += std::string("@") + pointer + "\n" +
-                                 //  "A=M\n" +
-                                 "D=M\n" +
-                                 "@SP\n" +
-                                 "A=M\n" +
-                                 "M=D\n" +
-                                 "@SP\n" +
-                                 "M=M+1\n";
-    }
+    // for (const std::string &pointer : pointer_array_call)
+    // {
+    //     pointer_template_call += std::string("@") + pointer + "\n" +
+    //                              //  "A=M\n" +
+    //                              "D=M\n" +
+    //                              "@SP\n" +
+    //                              "A=M\n" +
+    //                              "M=D\n" +
+    //                              "@SP\n" +
+    //                              "M=M+1\n";
+    // }
 
     // push returnAddress
-    fprintf(_hackfile, "@s\n"
-                       "D=M\n"
+    fprintf(_hackfile, "@%s\n"
+                       "D=A\n"
                        "@SP\n"
                        "AM=M+1\n"
                        "A=A-1\n"
@@ -468,7 +468,7 @@ void CodeGenerator::writeCall(std::string label, int num_args)
     // goto functionName
     fprintf(_hackfile, "@%s\n"
                        "0;JMP\n",
-            label.c_str());
+            func_name.c_str());
 
     // write label for return address
     fprintf(_hackfile, "(%s)\n", ret_label.c_str());
