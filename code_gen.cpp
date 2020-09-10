@@ -412,6 +412,7 @@ void CodeGenerator::writeCall(std::string label, int num_args)
 {
     // Convert to upper case.
     std::transform(label.begin(), label.end(), label.begin(), ::toupper);
+    std::string ret_label = "RETADDR" + label + "." + std::to_string(num_args);
 
     for (const std::string &pointer : pointer_array_call)
     {
@@ -426,14 +427,13 @@ void CodeGenerator::writeCall(std::string label, int num_args)
     }
 
     // push returnAddress
-    fprintf(_hackfile, "@RETADDR.%s.%d\n"
+    fprintf(_hackfile, "@s\n"
                        "D=M\n"
                        "@SP\n"
-                       "A=M\n"
-                       "M=D\n"
-                       "@SP\n"
-                       "M=M+1\n",
-            label.c_str(), call_index);
+                       "AM=M+1\n"
+                       "A=A-1\n"
+                       "M=D\n",
+            ret_label.c_str());
 
     // push LCL, ARG, THIS, THAT
     // fprintf(_hackfile, pointer_template_call.c_str());
@@ -443,25 +443,27 @@ void CodeGenerator::writeCall(std::string label, int num_args)
     writePush("THAT");
 
     // ARG = SP - 5 -nArgs
-    fprintf(_hackfile, "@%d\n"
-                       "D=A\n"
+    fprintf(_hackfile, "@SP\n"
+                       "D=M\n"
                        "@5\n"
-                       "D=D+A\n"
-                       "@SP\n"
-                       "A=M\n"
-                       "D=M-D\n"
+                       "D=D-A\n"
+                       "@%d\n"
+                       "D=D-A\n"
                        "@ARG\n"
-                       "A=M\n"
+                       "M=D\n"
+                       "@SP\n"
+                       "D=M\n"
+                       "@LCL\n"
                        "M=D\n",
             num_args);
 
     // LCL = SP
-    fprintf(_hackfile, "@SP\n"
-                       "A=M\n"
-                       "D=M\n"
-                       "@LCL\n"
-                       "A=M\n"
-                       "M=D\n");
+    // fprintf(_hackfile, "@SP\n"
+    //                    "A=M\n"
+    //                    "D=M\n"
+    //                    "@LCL\n"
+    //                    "A=M\n"
+    //                    "M=D\n");
 
     // goto functionName
     fprintf(_hackfile, "@%s\n"
@@ -469,7 +471,7 @@ void CodeGenerator::writeCall(std::string label, int num_args)
             label.c_str());
 
     // write label for return address
-    fprintf(_hackfile, "(RETADDR.%s.%d)\n", label.c_str(), call_index);
+    fprintf(_hackfile, "(%s)\n", ret_label.c_str());
     call_index++;
 }
 
@@ -478,11 +480,10 @@ void CodeGenerator::writePush(std::string segment)
     fprintf(_hackfile, "@%s\n"
                        "D=M\n"
                        "@SP\n"
-                       "A=M\n"
-                       "M=D\n"
-                       "@SP\n"
-                       "M=M+1\n",
-            segment.c_str(), segment.c_str());
+                       "AM=M+1\n"
+                       "A=A-1\n"
+                       "M=D\n",
+            segment.c_str());
 }
 
 const std::string pointer_array[] = {"THAT", "THIS", "ARG", "LCL"};
@@ -524,6 +525,11 @@ void CodeGenerator::writeReturn()
     //                    "M=D\n" // SP = ARG + 1
     // );
     writePop("ARG");
+    fprintf(_hackfile, "@ARG\n"
+                       "D=M\n"
+                       "@SP\n"
+                       "M=D+1\n" // SP = ARG + 1
+    );
 
     // fprintf(_hackfile, pointer_template.c_str());
 
@@ -541,14 +547,10 @@ void CodeGenerator::writeReturn()
 void CodeGenerator::writePop(std::string segment)
 {
     fprintf(_hackfile, "@SP\n"
-                       "AM=M-1\n"
+                       "A=M-1\n"
                        "D=M\n"
                        "@%s\n"
                        "A=M\n"
-                       "M=D\n"
-                       "@%s\n"
-                       "D=M+1\n"
-                       "@SP\n"
                        "M=D\n",
             segment.c_str(), segment.c_str());
 }
