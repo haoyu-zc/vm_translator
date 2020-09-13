@@ -12,3 +12,5 @@
 # .exe files
 *.exe
 
+code_writer.o: src/code_writer.cpp src/code_writer.h
+	$(CXX) $(WARNINGS) $(STDVERSION) -c src/code_writer.cpp -o code_writer.o

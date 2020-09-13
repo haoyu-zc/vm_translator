@@ -551,7 +551,7 @@ void CodeGenerator::writePop(std::string segment)
                        "@%s\n"
                        "A=M\n"
                        "M=D\n",
-            segment.c_str(), segment.c_str());
+            segment.c_str());
 }
 
 void CodeGenerator::writeFrameRestore(std::string segment, int minus)
