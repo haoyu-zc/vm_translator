@@ -83,7 +83,7 @@ void CodeGenerator::writeCompa(std::string compa_predicate)
                        "D=M-D\n"
                        "@_TRUE%d\n" // index
                        "D;%s\n"     // compa_predicate
-                       "D=0;\n"
+                       "D=0\n"
                        "@_FALSE%d\n"
                        "0;JMP\n"
                        "(_TRUE%d)\n"
