@@ -1,20 +1,31 @@
-VMTranslator: code_gen.o file.o main.o parser.o token.o utils.o
-	g++ -std=c++17 code_gen.o file.o main.o parser.o token.o utils.o -o VMTranslator
+CXX = g++
+STDVERSION = -std=c++17 -lstdc++fs
+WARNINGS = -pedantic -Wall -Wfatal-errors -Wextra -Wno-unused-parameter -Wno-unused-variable
 
-code_gen.o: code_gen.cpp code_gen.h
-	g++ -std=c++17 code_gen.cpp
 
-file.o: file.cpp file.h
-	g++ -std=c++17 file.cpp
+TARGET = VMTranslator
+OBJECTS = code_gen.o file.o parser.o token.o utils.o
 
-main.o: main.cpp
-	g++ -std=c++17 main.cpp
+all:$(TARGET)
 
-parser.o: parser.cpp parser.h
-	g++ -std=c++17 parser.cpp
+$(TARGET): $(OBJECTS)
+	$(CXX) $(WARNINGS) -o $(TARGET) src/main.cpp $(OBJECTS) $(STDVERSION)
 
-token.o: token.cpp token.h
-	g++ -std=c++17 token.cpp
+utils.o: src/utils.cpp src/utils.h 
+	$(CXX) $(WARNINGS) $(STDVERSION) -c src/utils.cpp -o utils.o
 
-utils.o: utils.cpp utils.h
-	g++ -std=c++17 utils.cpp
+token.o: src/token.cpp src/token.h
+	$(CXX) $(WARNINGS) $(STDVERSION) -c src/token.cpp -o token.o
+
+parser.o: src/parser.cpp src/parser.h
+	$(CXX) $(WARNINGS) $(STDVERSION) -c src/parser.cpp -o parser.o
+
+file.o: src/file.cpp src/file.h
+	$(CXX) $(WARNINGS) $(STDVERSION) -c src/file.cpp -o file.o
+
+code_gen.o: src/code_gen.cpp src/code_gen.h
+	$(CXX) $(WARNINGS) $(STDVERSION) -c src/code_gen.cpp -o code_gen.o
+
+
+clean:
+	rm -rf *.o $(TARGET) *.asm 
