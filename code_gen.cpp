@@ -410,10 +410,7 @@ void CodeGenerator::writeCall(std::string func_name, int num_args)
     // Convert to upper case.
     std::transform(func_name.begin(), func_name.end(), func_name.begin(), ::toupper);
     std::string ret_label;
-    if (func_name == "SYS.INIT")
-        ret_label = func_name;
-    else
-        ret_label = "RETADDR" + func_name + "." + std::to_string(num_args);
+    ret_label = "RETADDR." +  func_name + "." + std::to_string(num_args);
 
     // for (const std::string &pointer : pointer_array_call)
     // {
