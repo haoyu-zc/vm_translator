@@ -45,9 +45,6 @@ int main(int argc, char *argv[])
         if (!specified_out_name)
             fp = fopen((getNameStem(filepath_in) + ".asm").c_str(), "w");
 
-        CodeGenerator initiator(fp);
-        initiator.writeInit();
-
         std::deque<std::string> file_list;
 
         for (const auto &entry : fsys::directory_iterator(fsys_path))
@@ -59,6 +56,13 @@ int main(int argc, char *argv[])
                 else
                     file_list.push_back(entry.path().string());
             }
+        }
+
+        // Wrtie init function call only for mutiple files
+        if (file_list.size() > 1)
+        {
+            CodeGenerator initiator(fp);
+            initiator.writeInit();
         }
 
         for (const auto &file : file_list)
