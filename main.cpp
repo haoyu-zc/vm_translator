@@ -5,6 +5,8 @@
 #include "file.h"
 #include <stdio.h>
 #include "file.h"
+#include <vector>
+#include <deque>
 
 std::string program;
 std::string filename_in;
@@ -36,7 +38,6 @@ int main(int argc, char *argv[])
     Token tk;
     auto fsys_path = fsys::path(filepath_in);
 
-
     // Directory
     if (fsys::is_directory(fsys_path))
     {
@@ -47,21 +48,33 @@ int main(int argc, char *argv[])
         CodeGenerator initiator(fp);
         initiator.writeInit();
 
+        std::deque<std::string> file_list;
+
         for (const auto &entry : fsys::directory_iterator(fsys_path))
+        {
             if (entry.path().extension().string() == ".vm" || entry.path().extension().string() == ".VM")
             {
-                Parser parser(entry.path().string(), tk);
-                CodeGenerator cg(fp, &parser);
-                while (parser.hasMoreCommands())
-                {
-                    parser.advance();
-                    parser.parse();
-                    cg.writeHack();
-                }
+                if (entry.path().stem().string() == "Sys" || entry.path().extension().string() == "SyS")
+                    file_list.push_front(entry.path().string());
+                else
+                    file_list.push_back(entry.path().string());
             }
+        }
+
+        for (const auto &file : file_list)
+        {
+            Parser parser(file, tk);
+            CodeGenerator cg(fp, &parser);
+            while (parser.hasMoreCommands())
+            {
+                parser.advance();
+                parser.parse();
+                cg.writeHack();
+            }
+        }
         fclose(fp);
     }
-    else    // Single file
+    else // Single file
     {
         if (!specified_out_name)
             fp = fopen((getNameStem(filepath_in) + ".asm").c_str(), "w");
