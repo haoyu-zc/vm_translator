@@ -81,22 +81,17 @@ void CodeGenerator::writeCompa(std::string compa_predicate)
                        "D=M\n"
                        "A=A-1\n"
                        "D=M-D\n"
-                       "@TRUE%d\n" // index
-                       "D;%s\n"    // compa_predicate
-                       "@SP\n"
-                       "AM=M-1\n"
-                       "M=0\n"
-                       "@SP\n"
-                       "M=M+1\n"
-                       "@FALSE%d\n" // index
+                       "@_TRUE%d\n" // index
+                       "D;%s\n"     // compa_predicate
+                       "D=0;\n"
+                       "@_FALSE%d\n"
                        "0;JMP\n"
-                       "(TRUE%d)\n" // index
+                       "(_TRUE%d)\n"
+                       "D=-1\n"
+                       "(_FALSE%d)\n"
                        "@SP\n"
-                       "AM=M-1\n"
-                       "M=-1\n"
-                       "@SP\n"
-                       "M=M+1\n"
-                       "(FALSE%d)\n", // index
+                       "A=M-1\n"
+                       "M=D\n", // index
             index, compa_predicate.c_str(), index, index, index);
     index++;
 }
@@ -360,7 +355,8 @@ void CodeGenerator::writeInit()
     fprintf(_hackfile, "@256\n"
                        "D=A\n"
                        "@SP\n"
-                       "M=D\n");
+                       "M=D\n"
+                       "// call Sys.init\n");
     writeCall("Sys.init", 0);
 }
 
@@ -384,10 +380,11 @@ void CodeGenerator::writeIf(std::string label)
 {
     std::string prefix_label = _parser->getInputFileNameStem() + "." + label;
     std::transform(prefix_label.begin(), prefix_label.end(), prefix_label.begin(), ::toupper);
-    fprintf(_hackfile, "AM=M-1\n"
+    fprintf(_hackfile, "@SP\n"
+                       "AM=M-1\n"
                        "D=M\n"
                        "@%s\n"
-                       "D;JGT\n", // True branching(D=111...111).
+                       "D;JNE\n", // True branching(D=111...111).
             prefix_label.c_str());
 }
 
@@ -412,7 +409,11 @@ void CodeGenerator::writeCall(std::string func_name, int num_args)
 {
     // Convert to upper case.
     std::transform(func_name.begin(), func_name.end(), func_name.begin(), ::toupper);
-    std::string ret_label = "RETADDR" + func_name + "." + std::to_string(num_args);
+    std::string ret_label;
+    if (func_name == "SYS.INIT")
+        ret_label = func_name;
+    else
+        ret_label = "RETADDR" + func_name + "." + std::to_string(num_args);
 
     // for (const std::string &pointer : pointer_array_call)
     // {
