@@ -68,6 +68,12 @@ const char *pop_stem = "@SP\n"
                        "D=M\n"
                        "A=A-1\n";
 
+const char *AddSubAndOr_stem = "@SP\n"
+                               "AM=M-1\n"
+                               "D=M\n"
+                               "@SP\n"
+                               "A=M-1\n";
+
 const char *stack_dec = "@SP\n"
                         "AM=M-1\n";
 
@@ -101,11 +107,11 @@ void CodeGenerator::writeArithmetic(int command)
     switch (command)
     {
     case Token::ADD:
-        fprintf(_hackfile, pop_stem);
+        fprintf(_hackfile, AddSubAndOr_stem);
         fprintf(_hackfile, "M=M+D\n");
         break;
     case Token::SUB:
-        fprintf(_hackfile, pop_stem);
+        fprintf(_hackfile, AddSubAndOr_stem);
         fprintf(_hackfile, "M=M-D\n");
         break;
     case Token::NEG:
@@ -123,11 +129,11 @@ void CodeGenerator::writeArithmetic(int command)
         writeCompa("JLT");
         break;
     case Token::AND:
-        fprintf(_hackfile, pop_stem);
+        fprintf(_hackfile, AddSubAndOr_stem);
         fprintf(_hackfile, "M=M&D\n");
         break;
     case Token::OR:
-        fprintf(_hackfile, pop_stem);
+        fprintf(_hackfile, AddSubAndOr_stem);
         fprintf(_hackfile, "M=M|D\n");
         break;
     case Token::NOT:
@@ -177,7 +183,7 @@ const char *push_template_temp = "@%d\n"
 
 void CodeGenerator::writePushTemplate(const char *segment, int arg2)
 {
-        fprintf(_hackfile, push_template1, segment, arg2);
+    fprintf(_hackfile, push_template1, segment, arg2);
 }
 
 void CodeGenerator::writePush(int arg1, int arg2)
@@ -204,10 +210,9 @@ void CodeGenerator::writePush(int arg1, int arg2)
         fprintf(_hackfile, "@%d\n", arg2);
         fprintf(_hackfile, "D=A\n"
                            "@SP\n"
-                           "A=M\n"
-                           "M=D\n"
-                           "@SP\n"
-                           "M=M+1\n");
+                           "AM=M+1\n"
+                           "A=A-1\n"
+                           "M=D\n");
         break;
 
     case Token::TEMP:
@@ -406,7 +411,7 @@ void CodeGenerator::writeCall(std::string func_name, int num_args)
     // Convert to upper case.
     std::transform(func_name.begin(), func_name.end(), func_name.begin(), ::toupper);
     std::string ret_label;
-    ret_label = "RETADDR." +  func_name + "." + std::to_string(num_args);
+    ret_label = "RETADDR." + func_name + "." + std::to_string(num_args);
 
     // for (const std::string &pointer : pointer_array_call)
     // {
