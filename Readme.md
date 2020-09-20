@@ -5,8 +5,9 @@ Translates Hack-platform virtual machine code into corresponding machine code.
 ## Directory structure
 
 ```shell
+├─asm		# Translated .asm files which passed their tests.
 ├─src		# Sources code.
-└─tests		# Test files and translated .asm files which passed their tests.
+└─tests		# Test files provided by the courese.
 ./Makefile
 ```
 
