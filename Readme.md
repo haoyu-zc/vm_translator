@@ -1,4 +1,4 @@
-# VM-Translator for Coursera Course Nand2tetris
+# VM-Translator for Jack Programming Language
 
 Translates Hack-platform virtual machine code into corresponding machine code.
 
